@@ -14,11 +14,11 @@ interface FeaturedSectionProps {
 
 const FeaturedSection = ({ heading, sections }: FeaturedSectionProps) => {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 overflow-x-scroll no-scrollbar">
       <h2 className="text-2xl font-medium leading-10 tracking-[-0.02em] text-dark-200">
         {heading}
       </h2>
-      <div className="flex-between flex-wrap">
+      <div className="flex-between min-w-[1014px] gap-5">
         {sections.map((section) => {
           return (
             <Link

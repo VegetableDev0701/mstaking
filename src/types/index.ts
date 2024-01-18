@@ -14,10 +14,22 @@ export type FeaturedCollection = {
 export type Collection = {
   id: string;
   name: string;
+  longName: string;
+  description: string;
   floorPrice: number;
   imageUrl: string;
+  bannerUrl: string;
   href: string;
-  staked: number;
   apr: number;
   isVerified: boolean;
+  totalVolume: number;
+  nfts?: NFT[];
+  stakedNfts?: NFT[];
+};
+
+export type NFT = {
+  id: string;
+  name: string;
+  imageUrl: string;
+  price: number;
 };

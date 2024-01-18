@@ -5,14 +5,14 @@ import { SideBarItems } from "@/constants";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "../UI/Button";
-import CollectionsDropDown from "./CollectionsDropDown";
+import CollectionsDropDown from "./drop-downs/Collections";
 
 const Sidebar = () => {
   const pathname = usePathname();
 
   return (
     <div className="px-6 py-8 border-r border-dark-600 flex flex-col h-full w-[358px] bg-dark-800 justify-between">
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 flex-1">
         <div className="relative">
           <input
             type="text"

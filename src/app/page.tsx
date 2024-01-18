@@ -1,5 +1,5 @@
-import FeaturedSection from "@/components/featured-section/FeaturedSection";
-import TrendingCollections from "@/components/trending-collections/TrendingCollections";
+import FeaturedSection from "@/components/featured-section";
+import TrendingCollections from "@/components/pages/home/trending-collections";
 import { DummyFeaturedCollections } from "@/constants";
 
 export default function Home() {

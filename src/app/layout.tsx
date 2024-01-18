@@ -3,7 +3,7 @@ import { Poppins } from "next/font/google";
 import "@/styles/globals.css";
 import CosmosApp from "@/context/WalletProvider";
 import Navbar from "@/components/shared/Navbar";
-import Sidebar from "@/components/sidebar/Sidebar";
+import Sidebar from "@/components/sidebar";
 
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="bg-dark-900">
       <body
         className={`${poppins.className} bg-dark-900 text-white h-full w-full`}
       >
@@ -38,7 +38,7 @@ export default function RootLayout({
               <Sidebar />
             </div>
             <div className="pl-[358px] pt-[88px] h-full w-full">
-              <div className="pt-6 pb-0 px-6 h-full w-full overflow-y-scroll">
+              <div className="pt-6 pb-0 px-6 h-full w-full overflow-y-scroll no-scrollbar mb-10">
                 {children}
               </div>
             </div>

@@ -19,7 +19,7 @@ const TrendingCard = ({
       href={href}
     >
       <div className="flex-start gap-4">
-        <span className="text-sm font-medium leading-4 tracking-[-0.01em] text-left">
+        <span className="text-sm font-medium leading-4 tracking-[-0.01em] text-left text-dark-200">
           {id}
         </span>
         <div className="flex-start gap-2 w-full">

@@ -1,31 +1,35 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import { Collection } from "@/types";
+import DropDownCard from "./DropDownCard";
 
-const CollectionsDropDown = () => {
-  const [isOpen, setIsOpen] = useState(false);
+interface InsiderDropDownsProps {
+  header: string;
+  collections: Collection[];
+  initialOpen: boolean;
+}
+
+const InsiderDropDowns = ({
+  header,
+  collections,
+  initialOpen,
+}: InsiderDropDownsProps) => {
+  const [isOpen, setIsOpen] = useState(initialOpen);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
 
   return (
-    <div className="collapse bg-transparent rounded-lg">
+    <div className="collapse bg-transparent rounded-none">
       <div
         onClick={handleToggle}
-        className={`collapse-title flex-start gap-3 p-2 rounded-lg text-dark-200 ${
-          isOpen ? "bg-primary" : "transparent"
-        }`}
+        className={`collapse-title flex-start gap-3 p-2 border-b-2 rounded-none text-dark-200 bg-transparent border-dark-700`}
       >
-        <Image
-          src="/icons/user.svg"
-          alt="sidebar-logo"
-          width={32}
-          height={32}
-        />
         <div className="flex-between w-full">
           <span className="text-xl font-normal leading-[30px] tracking-normal text-left">
-            Collections
+            {header}
           </span>
           {isOpen ? (
             <Image
@@ -48,7 +52,7 @@ const CollectionsDropDown = () => {
 
       {isOpen && (
         <div
-          className="collapse-content  text-red-300"
+          className="collapse-content text-red-300 rounded-none px-0 mt-3"
           style={{
             visibility: isOpen ? "visible" : "hidden",
             minHeight: isOpen ? "100%" : "0",
@@ -56,11 +60,21 @@ const CollectionsDropDown = () => {
             height: isOpen ? "max-content" : "0",
           }}
         >
-          <p>hello</p>
+          <div className="flex flex-col gap-4">
+            {collections.map((item, index) => {
+              return (
+                <DropDownCard
+                  key={index}
+                  name={item.name}
+                  imageURL={item.imageUrl}
+                />
+              );
+            })}
+          </div>
         </div>
       )}
     </div>
   );
 };
 
-export default CollectionsDropDown;
+export default InsiderDropDowns;
