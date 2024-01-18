@@ -1,6 +1,7 @@
 import { Collection } from "@/types";
 import React, { useState } from "react";
 import NFTCard from "@/components/shared/NFTCard";
+import CustomBreakLine from "@/components/UI/CustomBreakLine";
 
 const CollectionTabs = ({ collection }: { collection: Collection }) => {
   const [activeTab, setActiveTab] = useState(1);
@@ -34,7 +35,7 @@ const CollectionTabs = ({ collection }: { collection: Collection }) => {
         ))}
       </div>
 
-      <div className="divider text-dark-700 m-0"></div>
+      <CustomBreakLine />
 
       {activeTab === 1 && (
         <div className="flex-start gap-x-6 flex-wrap gap-y-4">

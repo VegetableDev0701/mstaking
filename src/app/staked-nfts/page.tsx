@@ -3,6 +3,7 @@ import Button from "@/components/UI/Button";
 import React from "react";
 import { DummyCollections } from "@/constants";
 import NFTCollectionShow from "@/components/pages/staked-nfts/NFTCollectionShow";
+import CustomBreakLine from "@/components/UI/CustomBreakLine";
 
 const page = () => {
   const totalStaked = 1255;
@@ -17,7 +18,7 @@ const page = () => {
             Unstake All
           </Button>
         </div>
-        <div className="divider text-dark-700 m-0"></div>
+        <CustomBreakLine />
       </div>
       {DummyCollections.slice(0, 5).map((collection) => {
         return (

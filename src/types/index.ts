@@ -33,3 +33,18 @@ export type NFT = {
   imageUrl: string;
   price: number;
 };
+
+export type ChartData = {
+  totalVolume: number;
+  data: {
+    month: string;
+    volume: number;
+  }[];
+};
+
+export type UserRewards = {
+  earnings: number;
+  stakedNfts: number;
+  lockDuration: number;
+  nftsOwned: number;
+};

@@ -595,3 +595,28 @@ export const DummyCollections: types.Collection[] = [
     isVerified: true,
   },
 ];
+
+export const dummyChartData: types.ChartData = {
+  totalVolume: 25694,
+  data: [
+    { month: "Jan", volume: 20000 },
+    { month: "Feb", volume: 18000 },
+    { month: "Mar", volume: 22000 },
+    { month: "Apr", volume: 25000 },
+    { month: "May", volume: 28000 },
+    { month: "Jun", volume: 30000 },
+    { month: "Jul", volume: 32000 },
+    { month: "Aug", volume: 27000 },
+    { month: "Sep", volume: 26000 },
+    { month: "Oct", volume: 24000 },
+    { month: "Nov", volume: 23000 },
+    { month: "Dec", volume: 29000 },
+  ],
+};
+
+export const dummyUserRewards: types.UserRewards = {
+  earnings: 640.39,
+  stakedNfts: 125,
+  lockDuration: 1705597845,
+  nftsOwned: 125,
+};
