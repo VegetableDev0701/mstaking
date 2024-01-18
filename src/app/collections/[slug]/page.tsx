@@ -7,11 +7,8 @@ import CollectionTabs from "@/components/pages/collections/CollectionTabs";
 
 const Page = () => {
   const { slug: collectionName } = useParams();
-
   const collection = DummyCollections.find(
-    (collection) =>
-      typeof collectionName === "string" &&
-      collection.name.toLowerCase() === collectionName.toLowerCase()
+    (collection) => collection.name == collectionName
   );
 
   return collection ? (

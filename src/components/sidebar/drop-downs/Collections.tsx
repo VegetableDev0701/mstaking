@@ -1,11 +1,27 @@
-import React, { useState } from "react";
+"use client";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import InsiderDropDowns from "./InsiderDropDown";
 import { DummyCollections } from "@/constants";
 import { AnimatePresence, motion } from "framer-motion";
 
 const CollectionsDropDown = () => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [hasHydrated, setHasHydrated] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setHasHydrated(true);
+    const savedState = localStorage.getItem("collectionsDropdownState");
+    if (savedState !== null) {
+      setIsOpen(JSON.parse(savedState));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (hasHydrated) {
+      localStorage.setItem("collectionsDropdownState", JSON.stringify(isOpen));
+    }
+  }, [isOpen, hasHydrated]);
 
   const handleToggle = () => {
     setIsOpen(!isOpen);
@@ -21,7 +37,7 @@ const CollectionsDropDown = () => {
       <button
         onClick={handleToggle}
         className={`flex justify-between items-center w-full p-2 rounded-lg text-dark-200 ${
-          isOpen ? "bg-primary" : "bg-transparent"
+          isOpen ? "bg-dark-500" : "bg-transparent"
         }`}
       >
         <div className="flex-start gap-3">
@@ -32,7 +48,7 @@ const CollectionsDropDown = () => {
             height={32}
           />
           <span className="text-xl font-normal leading-[30px] tracking-normal text-left">
-            Collections
+            My Collections
           </span>
         </div>
         {isOpen ? (
@@ -56,7 +72,7 @@ const CollectionsDropDown = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="absolute left-0 w-full mt-2 bg-transparent rounded-lg max-h-[78%] overflow-y-scroll no-scrollbar"
+            className="absolute left-0 w-full mt-2 bg-transparent rounded-lg max-h-[70%] overflow-y-scroll no-scrollbar"
             initial="closed"
             animate="open"
             exit="closed"

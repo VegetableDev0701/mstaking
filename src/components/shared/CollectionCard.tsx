@@ -3,13 +3,13 @@ import { Collection } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
 
-const TrendingCard = ({
+const CollectionCard = ({
   id,
   name,
   imageUrl,
   floorPrice,
   href,
-  staked,
+  stakedNfts,
   apr,
   isVerified,
 }: Collection) => {
@@ -46,7 +46,7 @@ const TrendingCard = ({
                 )}
               </div>
               <p className="text-base font-semibold leading-4 tracking-[-0.01em] text-left text-white">
-                {staked}{" "}
+                {stakedNfts ? stakedNfts?.length : 0}{" "}
                 <span className="text-sm font-medium leading-4 tracking-[-0.01em] text-dark-200">
                   Staked
                 </span>
@@ -63,4 +63,4 @@ const TrendingCard = ({
   );
 };
 
-export default TrendingCard;
+export default CollectionCard;
