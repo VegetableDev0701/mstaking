@@ -1,11 +1,13 @@
 "use client";
-import React from "react";
+import React, { use } from "react";
 import Image from "next/image";
 import Button from "../UI/Button";
 import WalletConnectButton from "./WalletConnectButton";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 const Navbar = () => {
+  const router = useRouter();
   return (
     <div className="h-[88px] px-8 py-6 border-b border-dark-600 bg-dark-800 flex-between w-full">
       <div className="flex-start gap-3">
@@ -17,7 +19,13 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="flex-center gap-2">
-        <Button onClick={() => {}}>Add collection</Button>
+        <Button
+          onClick={() => {
+            router.push("/add-collection");
+          }}
+        >
+          Add collection
+        </Button>
         <WalletConnectButton />
       </div>
     </div>
