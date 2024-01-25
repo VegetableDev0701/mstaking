@@ -10,7 +10,7 @@ const CustomInfoDropDown = ({
   description,
 }: CustomInfoDropDownProps) => {
   return (
-    <div className="dropdown dropdown-right ">
+    <div className="dropdown md:dropdown-right max-md:dropdown-left">
       <div tabIndex={0} role="button" className="btn-circle w-max h-max ">
         <svg
           tabIndex={0}

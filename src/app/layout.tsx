@@ -34,11 +34,11 @@ export default function RootLayout({
             <div className="fixed top-0 left-0 z-50 w-full">
               <Navbar />
             </div>
-            <div className="fixed top-0 left-0 z-40 h-full pt-[88px]">
+            <div className="fixed top-0 left-0 z-40 h-full pt-[88px] max-lg:hidden">
               <Sidebar />
             </div>
-            <div className="pl-[358px] pt-[88px] h-full w-full">
-              <div className="pt-6 pb-0 px-6 h-full w-full overflow-y-scroll no-scrollbar mb-10">
+            <div className="pl-[358px] pt-[88px] h-full w-full max-lg:pl-0">
+              <div className="pt-6 pb-0 px-6 h-full w-full overflow-y-scroll no-scrollbar mb-10 max-md:p-4">
                 {children}
               </div>
             </div>

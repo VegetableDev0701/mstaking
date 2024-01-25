@@ -28,9 +28,16 @@ const NFTCard = ({
   }
 
   return (
-    <div className="p-3 rounded-lg bg-dark-600 flex flex-col gap-2.5">
-      <Image src={imageUrl} alt={name} width={216} height={216} quality={100} />
-      <div className="text-lg font-medium leading-[27px] tracking-[-0.02em] flex-between">
+    <div className="p-3 rounded-lg bg-dark-600 flex flex-col gap-2.5 items-center max-md:p-[8.61px]">
+      <Image
+        src={imageUrl}
+        alt={name}
+        width={216}
+        height={216}
+        quality={100}
+        className="max-md:w-[155px] max-md:h-[155px]"
+      />
+      <div className="text-lg font-medium leading-[27px] tracking-[-0.02em] flex-between max-md:text-sm w-full">
         <h4>
           {name} #{id}
         </h4>
@@ -39,7 +46,7 @@ const NFTCard = ({
       <Button
         onClick={onClick}
         disabled={status === "passive"}
-        className={`${bgColor}`}
+        className={`${bgColor} w-full`}
       >
         {status === "passive" ? (
           <span>Passive</span>

@@ -30,10 +30,16 @@ const CollectionBanner = ({
         quality={100}
       />
       <div className="absolute z-1 bottom-5 left-3">
-        <div className="flex-center gap-3">
-          <Image src={imageUrl} width={120} height={120} alt="arrow-icon" />
-          <div className="flex flex-col gap-1">
-            <h3 className="text-2xl font-medium leading-9 tracking-[-0.02em] text-left">
+        <div className="flex-center gap-3 max-md:h-[120px]">
+          <Image
+            src={imageUrl}
+            width={120}
+            height={120}
+            alt="collection-image"
+            className="!h-[120px] !w-[120px]"
+          />
+          <div className="flex flex-col gap-1 max-md:gap-0">
+            <h3 className="text-2xl font-medium leading-9 tracking-[-0.02em] text-left max-md:text-[18px] max-md:leading-6">
               {longTitle}
             </h3>
             <CollectionBannerDescription
@@ -41,7 +47,7 @@ const CollectionBanner = ({
               description={description}
               longTitle={longTitle}
             />
-            <p className="text-lg font-medium leading-[27px] tracking-[-0.02em] text-left">
+            <p className="text-lg font-medium leading-[27px] tracking-[-0.02em] text-left max-md:text-[14px]">
               Staked{" "}
               <span className="font-bold">
                 <span className="text-green">{staked}</span> / {total}

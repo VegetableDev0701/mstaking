@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 const CollectionBannerDescription = ({
   collectionImgUrl,
@@ -9,6 +9,14 @@ const CollectionBannerDescription = ({
   longTitle: string;
   description: string;
 }) => {
+  const [charLimit, setCharLimit] = useState(90);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setCharLimit(window.innerWidth < 768 ? 30 : 90);
+    }
+  }, []);
+
   return (
     <div className="text-base font-medium leading-6 tracking-[-0.02em] text-left">
       <dialog id="my_modal_2" className="modal focus-visible:outline-none">
@@ -20,11 +28,11 @@ const CollectionBannerDescription = ({
               height={100}
               alt="collection-image"
             />
-            <h3 className="text-2xl font-medium leading-9 tracking-[-0.02em] text-left">
+            <h3 className="text-2xl font-medium leading-9 tracking-[-0.02em] text-left max-md:text-[18px] max-md:leading-6">
               {longTitle}
             </h3>
           </div>
-          <p className="text-base font-medium leading-6 tracking-[-0.02em] text-left py-4">
+          <p className="text-base font-medium leading-6 tracking-[-0.02em] text-left py-4  max-md:text-[14px]">
             {description}
           </p>
         </div>
@@ -36,10 +44,10 @@ const CollectionBannerDescription = ({
         </form>
       </dialog>
       <span>
-        {description.length > 90
-          ? description.substring(0, 90) + "..."
+        {description.length > charLimit
+          ? description.substring(0, charLimit) + "..."
           : description}
-        {description.length > 90 && (
+        {description.length > charLimit && (
           <span
             className="text-blue-500 ml-2 cursor-pointer"
             onClick={() =>

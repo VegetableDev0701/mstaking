@@ -96,7 +96,7 @@ const AddCollection = () => {
         </CustomWrapper>
       </div>
       <div className="flex flex-col w-full gap-2.5">
-        <div className="flex-start gap-2.5 w-full">
+        <div className="flex-start gap-2.5 w-full max-md:flex-col">
           <Button onClick={() => {}} className="w-full">
             Start Staking
           </Button>
@@ -104,7 +104,7 @@ const AddCollection = () => {
             Snapshot of staked NFTs and addresses
           </Button>
         </div>
-        <div className="flex-start gap-2.5">
+        <div className="flex-start gap-2.5 max-md:flex-col">
           <Button onClick={() => {}} className="bg-secondary w-full">
             Restart Staking
           </Button>

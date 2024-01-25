@@ -8,12 +8,14 @@ interface InsiderDropDownsProps {
   header: string;
   collections: Collection[];
   initialOpen: boolean;
+  drawerClose?: () => void;
 }
 
 const InsiderDropDowns = ({
   header,
   collections,
   initialOpen,
+  drawerClose,
 }: InsiderDropDownsProps) => {
   const [isOpen, setIsOpen] = useState(initialOpen);
 
@@ -52,7 +54,7 @@ const InsiderDropDowns = ({
 
       {isOpen && (
         <div
-          className="collapse-content text-red-300 rounded-none px-0 mt-3"
+          className="collapse-content rounded-none px-0 mt-3"
           style={{
             visibility: isOpen ? "visible" : "hidden",
             minHeight: isOpen ? "100%" : "0",
@@ -67,6 +69,7 @@ const InsiderDropDowns = ({
                   key={index}
                   name={item.name}
                   imageURL={item.imageUrl}
+                  drawerClose={drawerClose}
                 />
               );
             })}

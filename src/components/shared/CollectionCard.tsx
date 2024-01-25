@@ -15,7 +15,7 @@ const CollectionCard = ({
 }: Collection) => {
   return (
     <Link
-      className="px-2 py-2 rounded-[18px] hover:bg-dark-500 transition-all"
+      className="px-2 py-2 rounded-[18px] hover:bg-dark-500 transition-all max-md:px-0"
       href={href}
     >
       <div className="flex-start gap-4">

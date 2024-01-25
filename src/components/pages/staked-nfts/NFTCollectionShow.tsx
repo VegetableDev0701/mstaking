@@ -7,14 +7,14 @@ const NFTCollectionShow = ({ collection }: { collection: Collection }) => {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex-between">
-        <h3 className="text-2xl font-medium leading-10 tracking-[-0.02em] text-left text-dark-200">
+        <h3 className="text-2xl font-medium leading-10 tracking-[-0.02em] text-left text-dark-200 max-md:text-[18px]">
           {collection.name} ({collection.nfts?.length || 0})
         </h3>
         <Button className="bg-secondary" onClick={() => {}}>
           Unstake Full Collection
         </Button>
       </div>
-      <div className="flex-start gap-x-6 flex-wrap gap-y-4">
+      <div className="flex-start gap-x-6 flex-wrap gap-y-4 max-md:gap-x-[0.78rem]">
         {collection.nfts?.map((nft) => {
           return (
             <NFTCard

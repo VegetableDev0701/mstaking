@@ -5,7 +5,7 @@ import InsiderDropDowns from "./InsiderDropDown";
 import { DummyCollections } from "@/constants";
 import { AnimatePresence, motion } from "framer-motion";
 
-const CollectionsDropDown = () => {
+const CollectionsDropDown = ({ drawerClose }: { drawerClose?: () => void }) => {
   const [hasHydrated, setHasHydrated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -84,11 +84,13 @@ const CollectionsDropDown = () => {
                 collections={DummyCollections.slice(0, 2)}
                 header="Staked"
                 initialOpen={true}
+                drawerClose={drawerClose}
               />
               <InsiderDropDowns
                 collections={DummyCollections.slice(2, 4)}
                 header="Available"
                 initialOpen={false}
+                drawerClose={drawerClose}
               />
             </div>
           </motion.div>

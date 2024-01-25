@@ -21,14 +21,14 @@ const CollectionTabs = ({ collection }: { collection: Collection }) => {
   ];
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex space-x-4">
+      <div className="flex space-x-4 max-md:justify-between">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`${
               activeTab === tab.id && "bg-dark-700"
-            } px-3 py-1 text-dark-200 rounded-lg focus:outline-none`}
+            } px-3 py-1 text-dark-200 rounded-lg focus:outline-none text-nowrap`}
           >
             {tab.name}
           </button>
@@ -38,7 +38,7 @@ const CollectionTabs = ({ collection }: { collection: Collection }) => {
       <CustomBreakLine />
 
       {activeTab === 1 && (
-        <div className="flex-start gap-x-6 flex-wrap gap-y-4">
+        <div className="flex-start gap-x-6 flex-wrap gap-y-4 max-md:gap-x-[0.78rem]">
           {collection.nfts === undefined || collection.nfts?.length === 0 ? (
             <h1>No NFTs Found For This Collection.</h1>
           ) : (
@@ -54,7 +54,7 @@ const CollectionTabs = ({ collection }: { collection: Collection }) => {
         </div>
       )}
       {activeTab === 2 && (
-        <div className="flex-start gap-x-6 flex-wrap gap-y-4">
+        <div className="flex-start gap-x-6 flex-wrap gap-y-4 max-md:gap-x-[0.78rem]">
           {collection.stakedNfts === undefined ||
           collection.stakedNfts?.length === 0 ? (
             <h1>You Have No NFTs Staked In This Collection.</h1>
@@ -71,7 +71,7 @@ const CollectionTabs = ({ collection }: { collection: Collection }) => {
         </div>
       )}
       {activeTab === 3 && (
-        <div className="flex-start gap-x-6 flex-wrap gap-y-4">
+        <div className="flex-start gap-x-6 flex-wrap gap-y-4 max-md:gap-x-[0.78rem]">
           {collection.stakedNfts === undefined ||
           collection.stakedNfts?.length === 0 ? (
             <h1>No Availabe NFTs Found In This Collection.</h1>

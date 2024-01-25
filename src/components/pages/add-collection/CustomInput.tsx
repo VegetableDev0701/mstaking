@@ -15,7 +15,7 @@ const CustomInput = ({
   inputOnChange,
 }: CustomInputProps) => {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 max-md:gap-2">
       <h3 className="text-base font-normal leading-5 tracking-[0.01em] text-left">
         {label}
       </h3>
