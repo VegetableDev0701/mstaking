@@ -38,7 +38,7 @@ export default function RootLayout({
               <Sidebar />
             </div>
             <div className="pl-[358px] pt-[88px] h-full w-full max-lg:pl-0">
-              <div className="pt-6 pb-0 px-6 h-full w-full overflow-y-scroll no-scrollbar mb-10 max-md:p-4">
+              <div className="pt-6 pb-0 px-6 h-full w-full overflow-y-scroll no-scrollbar mb-10 max-md:px-4">
                 {children}
               </div>
             </div>

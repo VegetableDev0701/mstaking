@@ -72,7 +72,7 @@ const CollectionsDropDown = ({ drawerClose }: { drawerClose?: () => void }) => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="absolute left-0 w-full mt-2 bg-transparent rounded-lg max-h-[70%] overflow-y-scroll no-scrollbar"
+            className="absolute left-0 w-full mt-2 bg-transparent rounded-lg max-h-[70%] overflow-y-scroll no-scrollbar max-md:max-h-[45%]"
             initial="closed"
             animate="open"
             exit="closed"

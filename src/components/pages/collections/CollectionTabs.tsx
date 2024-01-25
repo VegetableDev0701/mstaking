@@ -21,14 +21,14 @@ const CollectionTabs = ({ collection }: { collection: Collection }) => {
   ];
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex space-x-4 max-md:justify-between">
+      <div className="flex space-x-4 max-md:justify-between max-md:space-x-0">
         {tabs.map((tab) => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`${
               activeTab === tab.id && "bg-dark-700"
-            } px-3 py-1 text-dark-200 rounded-lg focus:outline-none text-nowrap`}
+            } px-3 py-1 text-dark-200 rounded-lg focus:outline-none max-md:text-nowrap max-md:text-[16px]`}
           >
             {tab.name}
           </button>
