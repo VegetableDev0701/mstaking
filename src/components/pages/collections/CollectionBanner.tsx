@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import CollectionBannerDescription from "./CollectionBannerDescription";
-
+import { DEFAULT_COLLECTION_IMG } from '@/constants'
 interface CollectionBannerProps {
   backgroundImage: string;
   imageUrl: string;
@@ -25,29 +25,23 @@ const CollectionBanner = ({
       <Image
         fill
         className="object-center object-cover pointer-events-none rounded-lg blur-sm"
-        src={backgroundImage}
+        src={backgroundImage == "default" ? DEFAULT_COLLECTION_IMG : backgroundImage}
         alt={longTitle}
         quality={100}
       />
       <div className="absolute z-1 bottom-5 left-3">
-        <div className="flex-center gap-3 max-md:h-[120px]">
-          <Image
-            src={imageUrl}
-            width={120}
-            height={120}
-            alt="collection-image"
-            className="!h-[120px] !w-[120px]"
-          />
-          <div className="flex flex-col gap-1 max-md:gap-0">
-            <h3 className="text-2xl font-medium leading-9 tracking-[-0.02em] text-left max-md:text-[18px] max-md:leading-6">
+        <div className="flex-center gap-3">
+          <Image src={imageUrl == "default" ? DEFAULT_COLLECTION_IMG : imageUrl} width={120} height={120} alt="arrow-icon" />
+          <div className="flex flex-col gap-1">
+            <h3 className="text-2xl font-medium leading-9 tracking-[-0.02em] text-left">
               {longTitle}
             </h3>
             <CollectionBannerDescription
-              collectionImgUrl={imageUrl}
+              collectionImgUrl={imageUrl == "default" ? DEFAULT_COLLECTION_IMG : imageUrl}
               description={description}
               longTitle={longTitle}
             />
-            <p className="text-lg font-medium leading-[27px] tracking-[-0.02em] text-left max-md:text-[14px]">
+            <p className="text-lg font-medium leading-[27px] tracking-[-0.02em] text-left">
               Staked{" "}
               <span className="font-bold">
                 <span className="text-green">{staked}</span> / {total}

@@ -2,6 +2,13 @@ import * as types from "@/types";
 
 export const ChainName = "injective";
 
+export const DEFAULT_COLLECTION_IMG = '/assets/collection.png'
+export const ADMIN_ADDRESS = 'inj1t35ykue5azt725d4aesd3z7en44j0jck8ap766'
+export interface IErrorResponse {
+  error: string,
+  code: number
+}
+
 export const SideBarItems: types.SideBarItem[] = [
   {
     label: "Home",
@@ -29,19 +36,19 @@ export const DummyFeaturedCollections: types.FeaturedCollection[] = [
   {
     id: "1",
     name: "Collection 1",
-    imageUrl: "/assets/sample-collection.png",
+    imageUrl: "/assets/collection.png",
     href: `/collections/${"1"}`,
   },
   {
     id: "2",
     name: "Collection 2",
-    imageUrl: "/assets/sample-collection.png",
+    imageUrl: "/assets/collection.png",
     href: `/collections/${"2"}`,
   },
   {
     id: "3",
     name: "Collection 3",
-    imageUrl: "/assets/sample-collection.png",
+    imageUrl: "/assets/collection.png",
     href: `/collections/${"3"}`,
   },
 ];

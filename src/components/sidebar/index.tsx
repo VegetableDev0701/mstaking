@@ -6,23 +6,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "../UI/Button";
 import CollectionsDropDown from "./drop-downs/Collections";
-import { useRouter } from "next/navigation";
-import WalletConnectButton from "../shared/WalletConnectButton";
 
-interface SideBarProps {
-  drawerClose?: () => void;
-}
-
-const Sidebar = ({ drawerClose }: SideBarProps) => {
+const Sidebar = () => {
   const pathname = usePathname();
-  const router = useRouter();
 
   return (
-    <div
-      className={`px-6 py-8 border-r border-dark-600 flex flex-col h-full w-[358px] bg-dark-800 justify-between ${
-        drawerClose && "w-screen"
-      }`}
-    >
+    <div className="px-6 py-8 border-r border-dark-600 flex flex-col h-full w-[358px] bg-dark-800 justify-between">
       <div className="flex flex-col gap-4 flex-1">
         <div className="relative">
           <input
@@ -42,15 +31,7 @@ const Sidebar = ({ drawerClose }: SideBarProps) => {
         {SideBarItems.map((item, index) => {
           const isActive = pathname === item.href;
           return (
-            <Link
-              key={index}
-              href={item.href}
-              onClick={() => {
-                if (drawerClose) {
-                  drawerClose();
-                }
-              }}
-            >
+            <Link key={index} href={item.href}>
               <div
                 className={`flex-start gap-3 p-2 rounded-lg text-dark-200 hover:text-white transition-colors ${
                   isActive && "bg-primary"
@@ -69,21 +50,9 @@ const Sidebar = ({ drawerClose }: SideBarProps) => {
             </Link>
           );
         })}
-        <CollectionsDropDown drawerClose={drawerClose} />
+        <CollectionsDropDown />
       </div>
-      <div className="flex flex-col gap-2 w-full max-md:gap-3">
-        {drawerClose && (
-          <div className={`flex flex-col gap-3 w-full`}>
-            <Button
-              onClick={() => {
-                router.push("/add-collection");
-              }}
-            >
-              Add collection
-            </Button>
-            <WalletConnectButton />
-          </div>
-        )}
+      <div className="flex flex-col gap-2">
         <Button onClick={() => {}}>Claim all rewards</Button>
         <Button onClick={() => {}} className="bg-secondary">
           Unstake All

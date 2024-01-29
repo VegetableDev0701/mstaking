@@ -5,13 +5,17 @@ import Button from "../UI/Button";
 import { NFT } from "@/types";
 
 interface NFTCardProps {
-  nft: NFT;
+  // nft: NFT;
+  tId: string,
+  nft: string,
   onClick: () => void;
   status: "passive" | "staked" | "active";
 }
 
 const NFTCard = ({
-  nft: { id, name, price, imageUrl },
+  // nft: { id, name, price, imageUrl },
+  nft,
+  tId,
   onClick,
   status,
 }: NFTCardProps) => {
@@ -28,25 +32,18 @@ const NFTCard = ({
   }
 
   return (
-    <div className="p-3 rounded-lg bg-dark-600 flex flex-col gap-2.5 items-center max-md:p-[8.61px]">
-      <Image
-        src={imageUrl}
-        alt={name}
-        width={216}
-        height={216}
-        quality={100}
-        className="max-md:w-[155px] max-md:h-[155px]"
-      />
-      <div className="text-lg font-medium leading-[27px] tracking-[-0.02em] flex-between max-md:text-sm w-full">
+    <div className="p-3 rounded-lg bg-dark-600 flex flex-col gap-2.5">
+      <Image src={nft} alt={tId} width={216} height={216} quality={100} />
+      <div className="text-lg font-medium leading-[27px] tracking-[-0.02em] flex-between">
         <h4>
-          {name} #{id}
+          {} #{tId}
         </h4>
-        <h4>{price} INJ</h4>
+        <h4>XX INJ</h4>
       </div>
       <Button
         onClick={onClick}
         disabled={status === "passive"}
-        className={`${bgColor} w-full`}
+        className={`${bgColor}`}
       >
         {status === "passive" ? (
           <span>Passive</span>

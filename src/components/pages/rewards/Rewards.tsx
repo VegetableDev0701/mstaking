@@ -1,15 +1,15 @@
 "use client";
 import React from "react";
-import RewardsCard from "./RewardsCard";
+import RewardsCart from "./RewardsCart";
 import { UserRewards } from "@/types";
 import { convertTimestampToDate } from "@/utils";
 import Image from "next/image";
 import Button from "@/components/UI/Button";
 
-const Rewards = ({ data }: { data: UserRewards }) => {
+const Rewards = ({ data, getReward }: { data: UserRewards, getReward: any }) => {
   return (
-    <div className="flex-center flex-wrap gap-3 max-md:flex-col">
-      <RewardsCard>
+    <div className="flex-center flex-wrap gap-3">
+      <RewardsCart>
         <div className="flex-center gap-2">
           <div className="p-2.5 border border-[#F4F7FE] rounded-full">
             <Image
@@ -28,12 +28,12 @@ const Rewards = ({ data }: { data: UserRewards }) => {
               ${data.earnings}
             </span>
           </div>
-          <Button onClick={() => {}} className="bg-secondary">
+          <Button onClick={() => {getReward()}} className="bg-secondary">
             Claim
           </Button>
         </div>
-      </RewardsCard>
-      <RewardsCard>
+      </RewardsCart>
+      <RewardsCart>
         <div className="flex-center gap-2">
           <div className="p-2.5 border border-[#F4F7FE] rounded-full">
             <Image
@@ -56,8 +56,8 @@ const Rewards = ({ data }: { data: UserRewards }) => {
             Unstake
           </Button>
         </div>
-      </RewardsCard>
-      <RewardsCard>
+      </RewardsCart>
+      <RewardsCart>
         <div className="flex flex-col w-full">
           <span className="text-sm font-medium leading-6 tracking-[-0.02em] text-left text-[#A3AED0]">
             Earnings
@@ -66,8 +66,8 @@ const Rewards = ({ data }: { data: UserRewards }) => {
             Until {convertTimestampToDate(data.lockDuration)}
           </span>
         </div>
-      </RewardsCard>
-      <RewardsCard>
+      </RewardsCart>
+      <RewardsCart>
         <div className="flex flex-col w-full">
           <span className="text-sm font-medium leading-6 tracking-[-0.02em] text-left text-[#A3AED0]">
             NFTs owned
@@ -76,7 +76,7 @@ const Rewards = ({ data }: { data: UserRewards }) => {
             {data.nftsOwned}
           </span>
         </div>
-      </RewardsCard>
+      </RewardsCart>
     </div>
   );
 };

@@ -2,8 +2,22 @@ import React from "react";
 import { DummyCollections } from "@/constants";
 import TrendingCardShow from "./TrendingCardShow";
 import Link from "next/link";
+import { IACollection } from '@/constants/collection'
+import { useDispatch, useSelector } from "react-redux";
+import { getCollections } from '@/lib/features/collectionSlice'
+import { Collection } from "@/interface/collection";
+interface TrendingCollections {
+  sections: IACollection[];
+}
+
+interface ICollections {
+  cols: IACollection[]
+}
 
 const TrendingCollections = () => {
+  const collections: Collection[] = useSelector(getCollections)
+  const leftCollections = collections.filter((el, ind) => ind % 2 == 0 )
+  const rightCollections = collections.filter((el, ind) => ind % 2 == 1)
   return (
     <div className="flex flex-col w-full gap-3">
       <div className="flex-between">
@@ -17,12 +31,12 @@ const TrendingCollections = () => {
           View all
         </Link>
       </div>
-      <div className="flex-center gap-5 max-md:flex-col max-md:gap-0">
-        <div className="flex-1 w-full border-t-2 border-dark-700 pt-2">
-          <TrendingCardShow collections={DummyCollections.slice(0, 4)} />
+      <div className="flex-center gap-5 border-t-2 border-dark-700">
+        <div className="flex-1">
+          <TrendingCardShow collections={leftCollections} />
         </div>
-        <div className="flex-1 w-full border-t-2 border-dark-700 pt-2 max-md:border-0 max-md:pt-0">
-          <TrendingCardShow collections={DummyCollections.slice(4, 8)} />
+        <div className="flex-1">
+          <TrendingCardShow collections={rightCollections} />
         </div>
       </div>
     </div>

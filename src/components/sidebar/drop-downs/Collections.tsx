@@ -4,11 +4,13 @@ import Image from "next/image";
 import InsiderDropDowns from "./InsiderDropDown";
 import { DummyCollections } from "@/constants";
 import { AnimatePresence, motion } from "framer-motion";
-
-const CollectionsDropDown = ({ drawerClose }: { drawerClose?: () => void }) => {
+import { getStakedCollections, getNoneStakedCollections } from '@/lib/features/tokenSlice'
+import { useSelector } from "react-redux";
+const CollectionsDropDown = () => {
   const [hasHydrated, setHasHydrated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
+  const stakedCol = useSelector(getStakedCollections)
+  const noneStakedCol = useSelector(getNoneStakedCollections)
   useEffect(() => {
     setHasHydrated(true);
     const savedState = localStorage.getItem("collectionsDropdownState");
@@ -72,7 +74,7 @@ const CollectionsDropDown = ({ drawerClose }: { drawerClose?: () => void }) => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="absolute left-0 w-full mt-2 bg-transparent rounded-lg max-h-[70%] overflow-y-scroll no-scrollbar max-md:max-h-[45%]"
+            className="absolute left-0 w-full mt-2 bg-transparent rounded-lg max-h-[70%] overflow-y-scroll no-scrollbar"
             initial="closed"
             animate="open"
             exit="closed"
@@ -81,16 +83,14 @@ const CollectionsDropDown = ({ drawerClose }: { drawerClose?: () => void }) => {
           >
             <div className="flex flex-col gap-3">
               <InsiderDropDowns
-                collections={DummyCollections.slice(0, 2)}
+                collections={stakedCol}
                 header="Staked"
                 initialOpen={true}
-                drawerClose={drawerClose}
               />
               <InsiderDropDowns
-                collections={DummyCollections.slice(2, 4)}
+                collections={noneStakedCol}
                 header="Available"
                 initialOpen={false}
-                drawerClose={drawerClose}
               />
             </div>
           </motion.div>

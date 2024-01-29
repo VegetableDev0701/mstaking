@@ -1,21 +1,20 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
-import { Collection } from "@/types";
+// import { Collection } from "@/types";
 import DropDownCard from "./DropDownCard";
-
+import { Collection } from "@/interface/collection";
+import { DEFAULT_COLLECTION_IMG } from '@/constants/index'
 interface InsiderDropDownsProps {
   header: string;
   collections: Collection[];
   initialOpen: boolean;
-  drawerClose?: () => void;
 }
 
 const InsiderDropDowns = ({
   header,
   collections,
   initialOpen,
-  drawerClose,
 }: InsiderDropDownsProps) => {
   const [isOpen, setIsOpen] = useState(initialOpen);
 
@@ -54,7 +53,7 @@ const InsiderDropDowns = ({
 
       {isOpen && (
         <div
-          className="collapse-content rounded-none px-0 mt-3"
+          className="collapse-content text-red-300 rounded-none px-0 mt-3"
           style={{
             visibility: isOpen ? "visible" : "hidden",
             minHeight: isOpen ? "100%" : "0",
@@ -63,13 +62,13 @@ const InsiderDropDowns = ({
           }}
         >
           <div className="flex flex-col gap-4">
-            {collections.map((item, index) => {
+            {collections.map((item: Collection, index) => {
               return (
                 <DropDownCard
                   key={index}
-                  name={item.name}
-                  imageURL={item.imageUrl}
-                  drawerClose={drawerClose}
+                  name={item.Ctitle}
+                  cAddress={item.Caddress}
+                  imageURL={item.CBackground == "default" ? DEFAULT_COLLECTION_IMG : item.CBackground}
                 />
               );
             })}

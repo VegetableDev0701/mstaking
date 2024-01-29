@@ -12,14 +12,19 @@
     "@cosmos-kit/keplr": "^2.6.2",
     "@cosmos-kit/leap": "^2.6.2",
     "@cosmos-kit/react": "^2.10.2",
+    "@injectivelabs/sdk-ts": "^1.14.5",
+    "@injectivelabs/wallet-ts": "^1.14.5",
+    "@reduxjs/toolkit": "^2.0.1",
     "chain-registry": "^1.25.0",
     "chart.js": "^4.4.1",
     "framer-motion": "^10.18.0",
     "next": "14.0.4",
     "pino-pretty": "^10.3.1",
-    "react": "^18",
+    "react": "^18.2.0",
     "react-chartjs-2": "^5.2.0",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "react-redux": "^9.1.0",
+    "react-toastify": "^10.0.4"
   },
   "devDependencies": {
     "@types/node": "^20",

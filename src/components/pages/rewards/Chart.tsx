@@ -106,7 +106,7 @@ export function Chart({ chartData }: { chartData: ChartData }) {
   };
 
   return (
-    <div className="px-8 py-5 border border-dark-200 rounded-[20px] flex flex-col gap-7 max-md:px-4">
+    <div className="px-8 py-5 border border-dark-200 rounded-[20px] flex flex-col gap-7">
       <div className="flex-between">
         <div className="flex-center bg-white text-dark-900 text-[13px] font-medium leading-6 tracking-[-0.02em] text-left py-2 px-4 w-max rounded-[7px] gap-1.5">
           <Image
@@ -121,8 +121,8 @@ export function Chart({ chartData }: { chartData: ChartData }) {
           <Image src="/icons/chart.svg" alt="chart" width={14} height={14} />
         </div>
       </div>
-      <div className="flex-center max-md:flex-col max-md:items-start max-md:justify-start max-md:gap-5">
-        <div className="w-[25%] max-md:full max-md:self-center max-md:w-full">
+      <div className="flex-center">
+        <div className="w-[25%]">
           <div>
             <h1 className="text-[34px] font-semibold leading-[42px] tracking-[-0.02em] text-left">
               ${formatNumberToK(chartData.totalVolume)}
@@ -135,7 +135,7 @@ export function Chart({ chartData }: { chartData: ChartData }) {
             </span>
           </div>
         </div>
-        <div className="w-[75%] h-max self-end max-md:w-full">
+        <div className="w-[75%] h-max self-end">
           <Line data={data} options={options as any} />
         </div>
       </div>
