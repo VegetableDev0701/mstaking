@@ -117,6 +117,7 @@ export const getStakedCollections = (state: any) => {
   let collections = state.collection.cols
   let list: Collection[] = []
   for(let i =0;i<collections.length; i++) {
+    if (!tokens[`${collections[i].Caddress}/${collections[i].Ctitle}`]) contiune;
     if (tokens[`${collections[i].Caddress}/${collections[i].Ctitle}`].staked.length) {
       list.push(collections[i])
     }
@@ -129,6 +130,7 @@ export const getNoneStakedCollections = (state: any) => {
   let collections = state.collection.cols
   let list: Collection[] = []
   for(let i =0;i<collections.length; i++) {
+    if (!tokens[`${collections[i].Caddress}/${collections[i].Ctitle}`]) contiune;
     if (tokens[`${collections[i].Caddress}/${collections[i].Ctitle}`].staked.length == 0) {
       list.push(collections[i])
     }
