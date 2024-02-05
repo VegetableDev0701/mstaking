@@ -4,13 +4,17 @@ import Image from "next/image";
 import InsiderDropDowns from "./InsiderDropDown";
 import { DummyCollections } from "@/constants";
 import { AnimatePresence, motion } from "framer-motion";
-import { getStakedCollections, getNoneStakedCollections } from '@/lib/features/tokenSlice'
+import {
+  getStakedCollections,
+  getNoneStakedCollections,
+} from "@/lib/features/tokenSlice";
 import { useSelector } from "react-redux";
+
 const CollectionsDropDown = () => {
   const [hasHydrated, setHasHydrated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const stakedCol = useSelector(getStakedCollections)
-  const noneStakedCol = useSelector(getNoneStakedCollections)
+  const stakedCol = useSelector(getStakedCollections);
+  const noneStakedCol = useSelector(getNoneStakedCollections);
   useEffect(() => {
     setHasHydrated(true);
     const savedState = localStorage.getItem("collectionsDropdownState");
@@ -74,7 +78,7 @@ const CollectionsDropDown = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="absolute left-0 w-full mt-2 bg-transparent rounded-lg max-h-[70%] overflow-y-scroll no-scrollbar"
+            className="w-full mt-2 bg-transparent rounded-lg overflow-y-scroll no-scrollbar"
             initial="closed"
             animate="open"
             exit="closed"
