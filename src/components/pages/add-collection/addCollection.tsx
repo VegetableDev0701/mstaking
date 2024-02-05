@@ -9,10 +9,10 @@ import { addCollection } from "@/lib/features/collectionSlice";
 import { useDispatch } from "react-redux";
 import { redirect } from "next/navigation";
 const AddCollection = () => {
-  const dispatch = useDispatch()
-  const [collectionAddr, setCollectionAddr] = useState<string>("")
-  const [collectionTitle, setCollectionTitle] = useState<string>("")
-  const [collectionDes, setCollectionDes] = useState<string>("")
+  const dispatch = useDispatch();
+  const [collectionAddr, setCollectionAddr] = useState<string>("");
+  const [collectionTitle, setCollectionTitle] = useState<string>("");
+  const [collectionDes, setCollectionDes] = useState<string>("");
   const [stakingDuration, setStakingDuration] = useState<number>(0);
   const [restartAble, setRestartAble] = useState<boolean>(true);
   const [enableAirdrop, setEnableAirdrop] = useState<boolean>(false);
@@ -24,7 +24,7 @@ const AddCollection = () => {
   const [stakingFee, setStakingFee] = useState<number>(0);
 
   const submitCollection = async () => {
-/*     let formData = new FormData()
+    /*     let formData = new FormData()
     formData.append('Caddress', collectionAddr)
     formData.append('Ctitle', collectionTitle)
     formData.append('Cdescription', collectionDes)
@@ -49,21 +49,26 @@ const AddCollection = () => {
       dailyAirdrops: dailyAirdrops,
       NFTFlag: disableNFT,
       unStakingFee: stakingFee,
-      receiverAddress: receiverAddress
-    }
+      receiverAddress: receiverAddress,
+    };
 
-    const res = await (await fetch('/api/collection/addCollection', {method: 'POST', body: JSON.stringify(bodyData)})).json()
+    const res = await (
+      await fetch("/api/collection/addCollection", {
+        method: "POST",
+        body: JSON.stringify(bodyData),
+      })
+    ).json();
     if (res.status == false) {
-      toast('Error Occur ', {
+      toast("Error Occur ", {
         hideProgressBar: true,
         autoClose: 2000,
-        type: 'error'
+        type: "error",
       });
     } else {
-      dispatch(addCollection(res))
-      redirect('/')
+      dispatch(addCollection(res));
+      redirect("/");
     }
-  }
+  };
 
   return (
     <div className="flex flex-col gap-8">
@@ -177,7 +182,10 @@ const AddCollection = () => {
       </div>
       <div className="flex flex-col w-full gap-2.5">
         <div className="flex-start w-full">
-          <Button onClick={() => submitCollection()} className="bg-primary w-full">
+          <Button
+            onClick={() => submitCollection()}
+            className="bg-primary w-full"
+          >
             Submit Collection
           </Button>
         </div>
