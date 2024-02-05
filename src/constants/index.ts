@@ -1,12 +1,11 @@
 import * as types from "@/types";
 
-export const ChainName = "injective";
-
-export const DEFAULT_COLLECTION_IMG = '/assets/collection.png'
-export const ADMIN_ADDRESS = 'inj1t35ykue5azt725d4aesd3z7en44j0jck8ap766'
+export const CHAINNAME = "injective";
+export const DEFAULT_COLLECTION_IMG = "/assets/collection.png";
+export const ADMIN_ADDRESS = "inj1c28sq6nx67azqa7ak634vjyymf7s0le5668h7k";
 export interface IErrorResponse {
-  error: string,
-  code: number
+  error: string;
+  code: number;
 }
 
 export const SideBarItems: types.SideBarItem[] = [
@@ -29,6 +28,11 @@ export const SideBarItems: types.SideBarItem[] = [
     label: "Collections",
     href: "/collections",
     imageUrl: "/icons/collection.svg",
+  },
+  {
+    label: "Owner Panel",
+    href: "/owner-panel",
+    imageUrl: "/icons/filter.svg",
   },
 ];
 
