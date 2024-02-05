@@ -6,12 +6,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "../UI/Button";
 import CollectionsDropDown from "./drop-downs/Collections";
+import { CHAINNAME, ADMIN_ADDRESS } from "@/constants";
+import { useChain } from "@cosmos-kit/react";
 
 const Sidebar = () => {
   const pathname = usePathname();
+  const chainContext = useChain(CHAINNAME);
+  const { address } = chainContext;
 
   return (
-    <div className="px-6 py-8 border-r border-dark-600 flex flex-col h-full w-[358px] bg-dark-800 justify-between">
+    <div className="px-6 py-8 border-r border-dark-600 flex flex-col h-full w-[358px] bg-dark-800 justify-between overflow-scroll no-scrollbar">
       <div className="flex flex-col gap-4 flex-1">
         <div className="relative">
           <input
@@ -50,6 +54,27 @@ const Sidebar = () => {
             </Link>
           );
         })}
+
+        {address === ADMIN_ADDRESS && (
+          <Link href="/admin">
+            <div
+              className={`flex-start gap-3 p-2 rounded-lg text-dark-200 hover:text-white transition-colors ${
+                pathname === "/admin" && "bg-primary"
+              }`}
+            >
+              <Image
+                src="/icons/filter.svg"
+                alt="sidebar-logo"
+                width={32}
+                height={32}
+              />
+              <span className="text-xl font-normal leading-[30px] tracking-normal text-left">
+                Admin Panel
+              </span>
+            </div>
+          </Link>
+        )}
+
         <CollectionsDropDown />
       </div>
       <div className="flex flex-col gap-2">
