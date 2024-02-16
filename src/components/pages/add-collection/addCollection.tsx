@@ -22,6 +22,7 @@ const AddCollection = () => {
 
   const [receiverAddress, setReceiverAddress] = useState<string>("");
   const [stakingFee, setStakingFee] = useState<number>(0);
+  const [unstakingFee, setUnstakingFee] = useState<number>(0);
 
   const submitCollection = async () => {
 /*     let formData = new FormData()
@@ -119,14 +120,6 @@ const AddCollection = () => {
             }}
             description="If enabled, users will have to manually restart their staking duration after each staking period ends."
           />
-          <CustomCheckBox
-            label="Enable INJ token airdrops."
-            checked={enableAirdrop}
-            onChange={(checked) => {
-              setEnableAirdrop(checked);
-            }}
-            description="If enabled, users will receive INJ tokens daily as a reward for staking."
-          />
         </CustomWrapper>
       </div>
       <div className="flex flex-col gap-3">
@@ -166,11 +159,19 @@ const AddCollection = () => {
             }}
           />
           <CustomInput
-            label="Staking/unstaking fee(INJ)"
+            label="Staking fee(INJ)"
             inputType="number"
-            placeHolder="Staking/unstaking fee(INJ)"
+            placeHolder="Staking fee(INJ)"
             inputOnChange={(value) => {
               setStakingFee(Number(value));
+            }}
+          />
+          <CustomInput
+            label="Unstaking fee(INJ)"
+            inputType="number"
+            placeHolder="Unstaking fee(INJ)"
+            inputOnChange={(value) => {
+              setUnstakingFee(Number(value));
             }}
           />
         </CustomWrapper>

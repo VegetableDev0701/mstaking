@@ -3,7 +3,7 @@ import * as types from "@/types";
 export const ChainName = "injective";
 
 export const DEFAULT_COLLECTION_IMG = '/assets/collection.png'
-export const ADMIN_ADDRESS = 'inj1t35ykue5azt725d4aesd3z7en44j0jck8ap766'
+export const ADMIN_ADDRESS = 'inj1j3de04txnndp94v37hfl0k906z0f47crrl0xm3'
 export interface IErrorResponse {
   error: string,
   code: number

@@ -68,7 +68,7 @@ const InsiderDropDowns = ({
                   key={index}
                   name={item.Ctitle}
                   cAddress={item.Caddress}
-                  imageURL={item.CBackground == "default" ? DEFAULT_COLLECTION_IMG : item.CBackground}
+                  imageURL={item.CBackground == "default" ? DEFAULT_COLLECTION_IMG : `${process.env.API_SERVER}/images${item.CBackground}`}
                 />
               );
             })}

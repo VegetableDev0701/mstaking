@@ -19,10 +19,12 @@ import {
   extractDataFromStartToEnd,
   calculatePercentageDifference,
 } from "@/utils";
-
+import { getRewardData, getTotalRewards } from "@/lib/features/rewardSlice";
+import { useSelector } from "react-redux";
 export function Chart({ chartData }: { chartData: ChartData }) {
-  const { labels, dataValues } = extractDataFromStartToEnd(chartData);
-
+  const {labels, datasets } = useSelector(getRewardData)
+  const totalRewards = useSelector(getTotalRewards)
+  console.log('Total', totalRewards)
   ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -36,20 +38,7 @@ export function Chart({ chartData }: { chartData: ChartData }) {
 
   const data = {
     labels,
-    datasets: [
-      {
-        label: "Total Rewards",
-        data: dataValues,
-        fill: true,
-        backgroundColor: "transparent",
-        borderColor: "#ffff",
-        pointBackgroundColor: "#fff",
-        tension: 0.4,
-        borderWidth: 4,
-        pointBorderWidth: 6,
-        pointRadius: 3,
-      },
-    ],
+    datasets: datasets
   };
 
   // Chart options
@@ -57,7 +46,7 @@ export function Chart({ chartData }: { chartData: ChartData }) {
     responsive: true,
     plugins: {
       legend: {
-        display: false,
+        display: true,
       },
       tooltip: {
         enabled: true,
@@ -125,12 +114,11 @@ export function Chart({ chartData }: { chartData: ChartData }) {
         <div className="w-[25%]">
           <div>
             <h1 className="text-[34px] font-semibold leading-[42px] tracking-[-0.02em] text-left">
-              ${formatNumberToK(chartData.totalVolume)}
+              ${formatNumberToK(totalRewards)}
             </h1>
             <span className="text-sm font-medium leading-6 tracking-[-0.02em] text-left text-[#A3AED0]">
               Total Rewards
               <span className="text-[#05CD99]">
-                {calculatePercentageDifference(chartData)}
               </span>
             </span>
           </div>

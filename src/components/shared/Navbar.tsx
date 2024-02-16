@@ -9,14 +9,24 @@ import { getAddresses } from "@/services/wallet";
 import { useState } from "react";
 import { useEffect } from "react";
 import { ADMIN_ADDRESS } from '@/constants/index'
+import { useSelector } from "react-redux";
+import { getSelectedCollection } from "@/lib/features/collectionSlice";
+import { getRoute } from "@/lib/features/routerSlice";
+import { Collection } from "@/interface/collection";
 const Navbar = () => {
+  const selCollection: Collection = useSelector(getSelectedCollection)
+  const curRoute = useSelector(getRoute)
+  console.log('navbar curRoute', curRoute)
   const router = useRouter();
   const [myAddr, setMyAddr] = useState('')
+  console.log('navbar addr: ', myAddr)
   const addressConfirm = async () => {
-    setMyAddr((await getAddresses())[0])
+    const add = (await getAddresses())[0]
+    setMyAddr(add)
+    
   }
   useEffect(() => {
-    addressConfirm
+    addressConfirm()
   }, [])
   return (
     <div className="h-[88px] px-8 py-6 border-b border-dark-600 bg-dark-800 flex-between w-full">
@@ -29,13 +39,16 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="flex-center gap-2">
-        { ADMIN_ADDRESS == myAddr && <Button
+        { curRoute == 'HOME' && <Button
           onClick={() => {
             router.push("/add-collection");
           }}
         >
           Add collection
         </Button>}
+        { (selCollection.admin == myAddr && curRoute == 'COLLECTION') && <Button onClick={() => {
+          router.push(`/admin/${selCollection.Caddress}`)
+        }}>Edit Collection</Button>}
         <WalletConnectButton />
       </div>
     </div>

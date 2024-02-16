@@ -2,15 +2,16 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import InsiderDropDowns from "./InsiderDropDown";
-import { DummyCollections } from "@/constants";
 import { AnimatePresence, motion } from "framer-motion";
-import { getStakedCollections, getNoneStakedCollections } from '@/lib/features/tokenSlice'
+import { getCollections } from "@/lib/features/collectionSlice";
+import { getTokens } from '@/lib/features/tokenSlice'
 import { useSelector } from "react-redux";
+import { Token } from "@/interface/token";
 const CollectionsDropDown = () => {
   const [hasHydrated, setHasHydrated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const stakedCol = useSelector(getStakedCollections)
-  const noneStakedCol = useSelector(getNoneStakedCollections)
+  const collections = useSelector(getCollections)
+  const tokens = useSelector(getTokens)
   useEffect(() => {
     setHasHydrated(true);
     const savedState = localStorage.getItem("collectionsDropdownState");
@@ -83,12 +84,12 @@ const CollectionsDropDown = () => {
           >
             <div className="flex flex-col gap-3">
               <InsiderDropDowns
-                collections={stakedCol}
+                collections={collections.filter((el: any) => tokens && tokens[`${el.Caddress}/${el.Ctitle}`] && tokens[`${el.Caddress}/${el.Ctitle}`].staked.filter((el: Token) => el.start_timestamp >el.end_timestamp).length != 0)}
                 header="Staked"
                 initialOpen={true}
               />
               <InsiderDropDowns
-                collections={noneStakedCol}
+                collections={collections.filter((el: any) =>  tokens && tokens[`${el.Caddress}/${el.Ctitle}`] && tokens[`${el.Caddress}/${el.Ctitle}`].staked.filter((el: Token) => el.start_timestamp >el.end_timestamp).length == 0)}
                 header="Available"
                 initialOpen={false}
               />

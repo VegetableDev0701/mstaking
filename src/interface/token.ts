@@ -1,9 +1,9 @@
 export interface Token {
   token_address: string,
   token_id: string,
-  start_timestamp: Number,
-  end_timestamp: Number,
-  airdrop_claim_timestamp: Number,
+  start_timestamp: number,
+  end_timestamp: number,
+  airdrop_claim_timestamp: number,
   is_paid: boolean
 }
 

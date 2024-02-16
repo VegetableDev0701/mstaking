@@ -1,6 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Token, CollectionToken } from '@/interface/token'
 import { Collection } from '@/interface/collection'
+import { persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
+
 export interface tokenState {
   tokens: {
     [keyName: string]: CollectionToken
@@ -97,11 +100,17 @@ export const getCollectionTokens = (keyName: string) => (state: any) => {
     if (state.token.tokens && state.token.tokens[keyName]) {
       return state.token.tokens[keyName];
     } else {
-      return []
+      return {
+        staked: [],
+        unstaked: []
+      }
     }
   } catch(e) {
     console.log('Token slice error: ', e)
-    return []
+    return {
+      staked: [],
+      unstaked: []
+    }
   }
 }
 export const getTokenCount = (state: any) => {
@@ -112,12 +121,23 @@ export const getTokenCount = (state: any) => {
   })
   return count
 }
+export const getStakedTotalCOunt = (state: any) => {
+  let count = 0
+  if (!state.token.tokens) return 0;
+  Object.keys(state.token.tokens).map((key: string, index: number) => {
+    count = count + state.token.tokens[key].staked.filter((el: Token) => el.start_timestamp >= el.end_timestamp ).length
+  })
+  return count
+}
 export const getStakedCollections = (state: any) => {
   let tokens = state.token.tokens
   let collections = state.collection.cols
   let list: Collection[] = []
   for(let i =0;i<collections.length; i++) {
-    if (tokens[`${collections[i].Caddress}/${collections[i].Ctitle}`].staked.length) {
+    let colToken = tokens[`${collections[i].Caddress}/${collections[i].Ctitle}`]
+    if (!colToken || colToken.staked.length == 0) {
+      continue
+    } else {
       list.push(collections[i])
     }
   }
@@ -129,11 +149,18 @@ export const getNoneStakedCollections = (state: any) => {
   let collections = state.collection.cols
   let list: Collection[] = []
   for(let i =0;i<collections.length; i++) {
-    if (tokens[`${collections[i].Caddress}/${collections[i].Ctitle}`].staked.length == 0) {
+    let colToken = tokens[`${collections[i].Caddress}/${collections[i].Ctitle}`]
+    if (!colToken || colToken.staked.length != 0) {
+      continue
+    } else {
       list.push(collections[i])
     }
   }
   return list
 }
-
-export default tokenSlice.reducer
+const tokenPersistConfig = {
+  key: "token",
+  storage: storage,
+  whitelist: ["tokens"],
+};
+export default persistReducer(tokenPersistConfig, tokenSlice.reducer)

@@ -57,14 +57,15 @@ const NFTCollectionShow = ({ tokens, title }: { tokens: Token[], title: string }
         <h3 className="text-2xl font-medium leading-10 tracking-[-0.02em] text-left text-dark-200">
           {cTitle} ({tokens.length || 0})
         </h3>
+        { tokens.length ? 
         <Button className="bg-secondary" onClick={() => {}}>
           Unstake Full Collection
-        </Button>
+        </Button> : ''}
       </div>
       <div className="flex-start gap-x-6 flex-wrap gap-y-4">
         {tokens?.map((nft, ind) => {
           return (
-            nft.start_timestamp> nft.end_timestamp && <NFTCard
+            nft.start_timestamp >= nft.end_timestamp && <NFTCard
               key={ind}
               address={nft.token_address}
               tId={nft.token_id}

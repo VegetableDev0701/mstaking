@@ -4,6 +4,7 @@ import Link from "next/link";
 import { IACollection } from '@/constants/collection'
 import { DEFAULT_COLLECTION_IMG } from '@/constants'
 import { Collection } from "@/interface/collection";
+import { getBackgroundUrl } from "@/helper/utils";
 interface FeaturedSectionProps {
   heading: string;
   collections: Collection[];
@@ -16,16 +17,16 @@ const FeaturedSection = ({ heading, collections }: FeaturedSectionProps) => {
         {heading}
       </h2>
       <div className="flex-between min-w-[1014px] gap-5">
-        {collections.map((section) => {
+        {collections.map((section, index) => {
           return (
             <Link
-              key={section._id}
+              key={index}
               className="relative w-max overflow-hidden rounded-[18px]"
               href={`/collections/${section.Caddress}`}
             >
               <div className="transition-transform hover:scale-105 transform-gpu">
                 <Image
-                  src={section.CBackground == "default" ? DEFAULT_COLLECTION_IMG : section.CBackground}
+                  src={getBackgroundUrl(section.CBackground)}
                   alt={section.Ctitle}
                   width={338}
                   height={272}

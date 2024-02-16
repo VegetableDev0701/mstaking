@@ -24,7 +24,7 @@ const CollectionCard = ({
         </span>
         <div className="flex-start gap-2 w-full">
           <Image
-            src={CBackground == "default" ? DEFAULT_COLLECTION_IMG : CBackground}
+            src={CBackground == "default" ? DEFAULT_COLLECTION_IMG : `${process.env.API_SERVER}/images/${CBackground}`}
             alt={Cdescription}
             width={72}
             height={72}

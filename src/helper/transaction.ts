@@ -59,10 +59,10 @@ const DEFAULT_UNSTAKE_FEE = {
 export const StackHelper = async (
   contractAddress: string,
   executeMsg: any,
+  fee: any,
   funds: any = undefined) => {
   const sender = (await getAddresses())[0]
   try {
-    debugger
     const network = getNetworkInfo(Network.TestnetK8s);
     const chainId = CHAIN_ID; /* ChainId.Mainnet */
     const { key } = await getKeplr(chainId);
@@ -73,7 +73,7 @@ export const StackHelper = async (
       contractAddress,
       sender: sender,
       msg: executeMsg,
-      funds
+      funds: fee
     });
 
     const msgs = Array.isArray(msg) ? msg : [msg];
@@ -97,7 +97,11 @@ export const StackHelper = async (
     let { txRaw, signDoc } = createTransaction({
       pubKey,
       chainId,
-      fee: DEFAULT_STD_FEE,
+      fee: {
+        amount: [fee],
+        gas: fee.amount
+      },
+      // fee: DEFAULT_STD_FEE,
       // fee: DEFAULT_UNSTAKE_FEE,
       message: msgs,
       sequence: baseAccount.sequence,
@@ -110,7 +114,6 @@ export const StackHelper = async (
       signDoc
     );
     txRaw = getTxRawFromTxRawOrDirectSignResponse(directSignResponse);
-    debugger;
 
     const txService = new TxGrpcClient(network.grpc);
     const simulationResponse = await txService.simulate(txRaw);
@@ -142,11 +145,9 @@ export const unStakeHelper = async (
   contractAddress: string,
   executeMsg: any,
   unStakeFee: any,
-  unstake_fee_share: any,
   funds: any = undefined) => {
   const sender = (await getAddresses())[0]
   try {
-    debugger
     const network = getNetworkInfo(Network.TestnetK8s);
     const chainId = CHAIN_ID; /* ChainId.Mainnet */
     const { key } = await getKeplr(chainId);
@@ -177,6 +178,7 @@ export const unStakeHelper = async (
       DEFAULT_BLOCK_TIMEOUT_HEIGHT
     );
 
+    console.log(DEFAULT_STD_FEE)
     /** Prepare the Transaction **/
     let { txRaw, signDoc } = createTransaction({
       pubKey,
@@ -184,7 +186,7 @@ export const unStakeHelper = async (
       // fee: DEFAULT_STD_FEE,
       fee: {
         amount: [unStakeFee],
-        gas: unstake_fee_share
+        gas: unStakeFee.amount
       },
       message: msgs,
       sequence: baseAccount.sequence,
@@ -197,7 +199,6 @@ export const unStakeHelper = async (
       signDoc
     );
     txRaw = getTxRawFromTxRawOrDirectSignResponse(directSignResponse);
-    debugger;
 
     const txService = new TxGrpcClient(network.grpc);
     const simulationResponse = await txService.simulate(txRaw);
@@ -275,7 +276,6 @@ export const ClaimHelper = async (cAddress: string = '',executeMsg: any, funds: 
       signDoc
     );
     txRaw = getTxRawFromTxRawOrDirectSignResponse(directSignResponse);
-    debugger;
 
     const txService = new TxGrpcClient(network.grpc);
     const simulationResponse = await txService.simulate(txRaw);
@@ -310,7 +310,6 @@ export const transactionHelper = async (
   funds: any = undefined) => {
   const sender = "inj1t35ykue5azt725d4aesd3z7en44j0jck8ap766"
   try {
-    debugger
     const network = getNetworkInfo(Network.TestnetK8s);
     const chainId = CHAIN_ID; /* ChainId.Mainnet */
     const { key } = await getKeplr(chainId);
@@ -358,7 +357,6 @@ export const transactionHelper = async (
       signDoc
     );
     txRaw = getTxRawFromTxRawOrDirectSignResponse(directSignResponse);
-    debugger;
 
     const txService = new TxGrpcClient(network.grpc);
     const simulationResponse = await txService.simulate(txRaw);

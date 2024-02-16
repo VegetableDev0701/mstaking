@@ -19,6 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return;
     }  
     const data = await response.json();
+    console.log(data);
     res.status(response.status || 200).json(data);
   } catch (error: any) {
     console.error(error);
