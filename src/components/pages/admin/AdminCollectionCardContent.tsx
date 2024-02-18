@@ -221,6 +221,7 @@ const AdminCollectionCardContent = ({
       <InfoCard title="Change lock duration">
         <input
           type="number"
+
           value={lockDur}
           className="p-2 rounded-md bg-[#121212] text-dark-100 text-base font-normal leading-4 tracking-[-0.01em] text-center"
           placeholder="Enter Duration"

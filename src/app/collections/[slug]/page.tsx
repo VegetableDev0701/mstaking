@@ -3,6 +3,7 @@ import React from "react";
 import { useParams } from "next/navigation";
 import CollectionBanner from "@/components/pages/collections/CollectionBanner";
 import CollectionTabs from "@/components/pages/collections/CollectionTabs";
+
 import { getCollectionData, setSelectedCollection } from '@/lib/features/collectionSlice'
 import { getCollectionTokens } from '@/lib/features/tokenSlice'
 import { setRoute } from "@/lib/features/routerSlice";
@@ -36,7 +37,6 @@ const Page = () => {
         }
         total={selCollectionTokens ? (selCollectionTokens.staked.filter((el: Token) =>  el.token_stake_time > el.token_end_time).length + selCollectionTokens.unstaked.length).toString() : "0"}
       />
-      <CollectionTabs tokens={selCollectionTokens} selCollection={selCollection}/>
     </div>
   ) : (
     <div>

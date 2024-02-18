@@ -1,11 +1,11 @@
 "use client";
 import { useChain } from "@cosmos-kit/react";
-import { ChainName } from "@/constants";
+import { CHAINNAME } from "@/constants";
 import Button from "../UI/Button";
 import { shortenAddress } from "@/utils";
 
 export default function WalletConnectButton() {
-  const chainContext = useChain(ChainName);
+  const chainContext = useChain(CHAINNAME);
   const { connect, address, isWalletConnected } = chainContext;
 
   async function handleConnectWallet() {
