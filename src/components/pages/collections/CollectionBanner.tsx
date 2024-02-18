@@ -25,19 +25,19 @@ const CollectionBanner = ({
       <Image
         fill
         className="object-center object-cover pointer-events-none rounded-lg blur-sm"
-        src={backgroundImage == "default" ? DEFAULT_COLLECTION_IMG : backgroundImage}
+        src={backgroundImage}
         alt={longTitle}
         quality={100}
       />
       <div className="absolute z-1 bottom-5 left-3">
         <div className="flex-center gap-3">
-          <Image src={imageUrl == "default" ? DEFAULT_COLLECTION_IMG : imageUrl} width={120} height={120} alt="arrow-icon" />
+          <Image src={imageUrl} width={120} height={120} alt="arrow-icon" />
           <div className="flex flex-col gap-1">
             <h3 className="text-2xl font-medium leading-9 tracking-[-0.02em] text-left">
               {longTitle}
             </h3>
             <CollectionBannerDescription
-              collectionImgUrl={imageUrl == "default" ? DEFAULT_COLLECTION_IMG : imageUrl}
+              collectionImgUrl={imageUrl}
               description={description}
               longTitle={longTitle}
             />

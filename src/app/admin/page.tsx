@@ -1,14 +1,12 @@
 "use client";
 import React from "react";
-import { CHAINNAME, ADMIN_ADDRESS } from "@/constants";
-import { useChain } from "@cosmos-kit/react";
 import AdminCollectionCard from "@/components/pages/admin/AdminCollectionCard";
-
+import { ADMIN_ADDRESS } from '@/constants'
+import { useSelector } from "react-redux";
+import { getAddress } from "@/lib/features/addressSlice";
 const Page = () => {
-  const chainContext = useChain(CHAINNAME);
-  const { address } = chainContext;
-
-  return address === ADMIN_ADDRESS ? (
+  const myAddr = useSelector(getAddress)
+  return myAddr === ADMIN_ADDRESS ? (
     <div>
       <AdminCollectionCard />
     </div>

@@ -1,11 +1,14 @@
 import React from "react";
 
 const CustomSwitchButton = ({
+  initState,
   onChangeParent,
 }: {
+  initState: boolean,
   onChangeParent: (bool: boolean) => void;
 }) => {
-  const [checked, setChecked] = React.useState(false);
+  const [checked, setChecked] = React.useState(initState);
+
   const onChange = (value: boolean) => {
     setChecked(value);
     onChangeParent(value);

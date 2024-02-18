@@ -41,9 +41,9 @@ export type ChartData = {
     volume: number;
   }[];
 };
-
+import { CollectionReward } from "@/interface/Reward";
 export type UserRewards = {
-  earnings: number;
+  earnings: CollectionReward[];
   stakedNfts: number;
   lockDuration: number;
   nftsOwned: number;

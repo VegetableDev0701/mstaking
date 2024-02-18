@@ -3,72 +3,39 @@ import React from "react";
 import { useParams } from "next/navigation";
 import CollectionBanner from "@/components/pages/collections/CollectionBanner";
 import CollectionTabs from "@/components/pages/collections/CollectionTabs";
-import { getCollectionData } from "@/lib/features/collectionSlice";
-import {
-  setCollectionTokens,
-  getCollectionTokens,
-} from "@/lib/features/tokenSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { getCollectionNFT, getSMNFT } from "@/helper/queryHelper";
+
+import { getCollectionData, setSelectedCollection } from '@/lib/features/collectionSlice'
+import { getCollectionTokens } from '@/lib/features/tokenSlice'
+import { setRoute } from "@/lib/features/routerSlice";
+import { useSelector, useDispatch } from "react-redux";
 import { Token } from "@/interface/token";
-import { useEffect } from "react";
 import { Collection } from "@/interface/collection";
 import { CollectionToken } from "@/interface/token";
+import { useEffect } from "react";
+import { getBackgroundUrl } from "@/helper/utils";
 const Page = () => {
-  const dispatch = useDispatch();
   const { slug: Caddress } = useParams();
-  const selCollection: Collection = useSelector(getCollectionData(Caddress));
-  const getNFTData = async () => {
-    const collectionNFT = await getCollectionNFT(Caddress);
-    const smNFT = await getSMNFT(selCollection.Saddress);
-    dispatch(
-      setCollectionTokens({
-        keyname: `${Caddress}/${selCollection.Ctitle}`,
-        tokens: {
-          unstaked: collectionNFT,
-          staked: smNFT,
-        },
-      })
-    );
-  };
+  const dispatch = useDispatch()
+  const selCollection: Collection = useSelector(getCollectionData(Caddress))
+  const selCollectionTokens: CollectionToken = useSelector(getCollectionTokens(`${Caddress}`))
+  const setSelCollection = async () => {
+    dispatch(setSelectedCollection({Caddress}))
+    dispatch(setRoute({routeStr:'COLLECTION'}))
+  }
   useEffect(() => {
-    getNFTData();
-  }, []);
-  const selCollectionTokens: CollectionToken = useSelector(
-    getCollectionTokens(`${Caddress}/${selCollection.Ctitle}`)
-  );
-
+    setSelCollection()
+  }, [])
   return selCollectionTokens ? (
     <div className="flex flex-col gap-5">
       <CollectionBanner
-        backgroundImage={
-          selCollection?.CBackground ? selCollection?.CBackground : ""
-        }
-        imageUrl={selCollection?.CBackground ? selCollection?.CBackground : ""}
-        longTitle={selCollection?.Ctitle ? selCollection?.Ctitle : ""}
-        description={
-          selCollection?.Cdescription ? selCollection?.Cdescription : ""
-        }
+        backgroundImage={getBackgroundUrl(selCollection.cBkgimg)}
+        imageUrl={getBackgroundUrl(selCollection.cBkgimg)}
+        longTitle={selCollection?.cTitle ? selCollection?.cTitle : ''}
+        description={selCollection?.cDescription ? selCollection?.cDescription : ''}
         staked={
-          selCollectionTokens
-            ? selCollectionTokens.staked
-                .filter((el: Token) => el.start_timestamp > el.end_timestamp)
-                .length.toString()
-            : "0"
+          selCollectionTokens && selCollectionTokens.staked ? selCollectionTokens.staked.filter((el: Token) => el.token_stake_time > el.token_end_time).length.toString() : "0"
         }
-        total={
-          selCollectionTokens
-            ? (
-                selCollectionTokens.staked.filter(
-                  (el: Token) => el.start_timestamp > el.end_timestamp
-                ).length + selCollectionTokens.unstaked.length
-              ).toString()
-            : "0"
-        }
-      />
-      <CollectionTabs
-        tokens={selCollectionTokens}
-        selCollection={selCollection}
+        total={selCollectionTokens ? (selCollectionTokens.staked.filter((el: Token) =>  el.token_stake_time > el.token_end_time).length + selCollectionTokens.unstaked.length).toString() : "0"}
       />
     </div>
   ) : (

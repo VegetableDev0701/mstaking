@@ -6,8 +6,8 @@ import { IACollection } from '@/constants/collection'
 const TrendingCardShow = ({ collections }: { collections: IACollection[] }) => {
   return (
     <div className="flex flex-col pt-2">
-      {collections.map((collection) => {
-        return <CollectionCard key={collection._id} {...collection} />;
+      {collections.map((collection, index) => {
+        return <CollectionCard key={index} {...collection} />;
       })}
     </div>
   );

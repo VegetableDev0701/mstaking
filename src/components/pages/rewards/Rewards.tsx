@@ -1,12 +1,21 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import RewardsCart from "./RewardsCart";
 import { UserRewards } from "@/types";
 import { convertTimestampToDate } from "@/utils";
 import Image from "next/image";
 import Button from "@/components/UI/Button";
-
+import { useEffect } from "react";
 const Rewards = ({ data, getReward }: { data: UserRewards, getReward: any }) => {
+  const [totalEarning, setTotalEarning] = useState(0.0)
+  const calcTotalEarning = () => {
+    for(let i = 0;i<data.earnings.length; i++) {
+      setTotalEarning(totalEarning + data.earnings[i].ClaimAmount)
+    }
+  }
+  useEffect(() => {
+    calcTotalEarning()
+  }, [])
   return (
     <div className="flex-center flex-wrap gap-3">
       <RewardsCart>
@@ -25,7 +34,7 @@ const Rewards = ({ data, getReward }: { data: UserRewards, getReward: any }) => 
               Earnings
             </span>
             <span className="text-2xl font-semibold leading-8 tracking-[-0.02em] text-left">
-              ${data.earnings}
+              ${totalEarning}
             </span>
           </div>
           <Button onClick={() => {getReward()}} className="bg-secondary">
@@ -52,9 +61,6 @@ const Rewards = ({ data, getReward }: { data: UserRewards, getReward: any }) => 
               {data.stakedNfts}
             </span>
           </div>
-          <Button onClick={() => {}} className="bg-secondary">
-            Unstake
-          </Button>
         </div>
       </RewardsCart>
       <RewardsCart>
@@ -63,7 +69,7 @@ const Rewards = ({ data, getReward }: { data: UserRewards, getReward: any }) => 
             Earnings
           </span>
           <span className="text-2xl font-semibold leading-8 tracking-[-0.02em] text-left">
-            Until {convertTimestampToDate(data.lockDuration)}
+            Until {new Date(data.lockDuration).toLocaleDateString()}
           </span>
         </div>
       </RewardsCart>

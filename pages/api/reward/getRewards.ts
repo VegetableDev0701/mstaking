@@ -1,13 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { IACollection } from '@/constants/collection'
-import { IErrorResponse } from '@/constants/index'
-import { Collection } from '@/interface/collection';
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Collection[] | IErrorResponse>) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const response = await fetch(
-      `${process.env.API_SERVER}/api/collection/all`,
+      `${process.env.API_SERVER}/api/rewardGET/getreward`,
       {
-        method: 'GET',
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: req.body
       }
     );
     if (response.statusText !== 'OK') {
@@ -19,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       return;
     }  
     const data = await response.json();
-    console.log(data);
+    console.log('reward', data)
     res.status(response.status || 200).json(data);
   } catch (error: any) {
     console.error(error);

@@ -18,23 +18,21 @@ export const queryHelper = async (contractAddress: string, queryName: string, qu
   return null;
 };
 
-export const getSMNFT = async (contract: string) => {
-  const owner = (await getAddresses())[0]
+export const getSMNFT = async (contract: string, owner: string) => {
   const sTokens = await queryHelper(contract, "get_stakings_by_owner", {
       owner: owner
   })
   if (sTokens && sTokens.length ) {
-    // const retVal = sTokens.filter((el: any) => el.end_timestamp == 0 || el.end_timestamp < el.start_timestamp)
+    const retVal = sTokens.filter((el: any) => el.end_timestamp == 0 || el.end_timestamp < el.start_timestamp)
     // return retVal
-    const retVal: Token[] = sTokens.filter((el: any) => true)
+    // const retVal: Token[] = sTokens.filter((el: any) => true)
     return retVal
   } else {
     return []
   }
 }
 
-export const getCollectionNFT = async (contractAddress: string) => {
-  const owner = (await getAddresses())[0]
+export const getCollectionNFT = async (contractAddress: string, owner: string) => {
   let total: Number[] = []
   let Tokens: Token[] = []
   try {
@@ -56,12 +54,13 @@ export const getCollectionNFT = async (contractAddress: string) => {
     }
     for (let i = 0; i < total.length; i++) {
       Tokens.push({
-        token_address: contractAddress,
         token_id: total[i].toString(),
-        start_timestamp: 0,
-        end_timestamp: 0,
-        airdrop_claim_timestamp: 0,
-        is_paid: false
+        token_stake_time: 0,
+        token_end_time: 0,
+        token_reward: {
+          amount: "0",
+          denom: "0"
+        }
       })
     }
     return Tokens

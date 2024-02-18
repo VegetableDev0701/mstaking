@@ -1,19 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit'
-import counterReducer from '@/lib/features/counter/counterSlice'
 import collectionReducer from '@/lib/features/collectionSlice'
 import tokenReducer from '@/lib/features/tokenSlice'
-export const makeStore = () => {
-  return configureStore({
-    reducer: {
-      counter: counterReducer,
-      collection: collectionReducer,
-      token: tokenReducer
-    }
-  })
-}
+import rewardReducer from '@/lib/features/rewardSlice'
+import routeReducer from '@/lib/features/routerSlice'
+import addressReducer from '@/lib/features/addressSlice'
 
-// Infer the type of makeStore
-export type AppStore = ReturnType<typeof makeStore>
-// Infer the `RootState` and `AppDispatch` types from the store itself
-export type RootState = ReturnType<AppStore['getState']>
-export type AppDispatch = AppStore['dispatch']
+export const makeStore = configureStore({
+  reducer: {
+    collection: collectionReducer,
+    token: tokenReducer,
+    rewards: rewardReducer,
+    routes: routeReducer,
+    address: addressReducer
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false })
+})

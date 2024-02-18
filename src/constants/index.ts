@@ -1,8 +1,8 @@
 import * as types from "@/types";
+export const ChainName = "injective";
 
-export const CHAINNAME = "injective";
-export const DEFAULT_COLLECTION_IMG = "/assets/collection.png";
-export const ADMIN_ADDRESS = "inj1c28sq6nx67azqa7ak634vjyymf7s0le5668h7k";
+export const DEFAULT_COLLECTION_IMG = '/assets/collection.png'
+export const ADMIN_ADDRESS = 'inj1j3de04txnndp94v37hfl0k906z0f47crrl0xm3'
 export interface IErrorResponse {
   error: string;
   code: number;

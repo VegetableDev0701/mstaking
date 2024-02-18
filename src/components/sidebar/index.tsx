@@ -6,14 +6,23 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import Button from "../UI/Button";
 import CollectionsDropDown from "./drop-downs/Collections";
-import { CHAINNAME, ADMIN_ADDRESS } from "@/constants";
-import { useChain } from "@cosmos-kit/react";
-
+import { getAddress } from "@/lib/features/addressSlice";
+import { useSelector } from "react-redux";
+import { ADMIN_ADDRESS } from '@/constants'
+import { useState, useEffect } from "react";
+import { getAddresses } from "@/services/wallet";
 const Sidebar = () => {
   const pathname = usePathname();
-  const chainContext = useChain(CHAINNAME);
-  const { address } = chainContext;
-
+  // const address = useSelector(getAddress)
+  const [myAddr, setMyAddr] = useState('')
+  const addressConfirm = async () => {
+    const add = (await getAddresses())[0]
+    setMyAddr(add)
+    
+  }
+  useEffect(() => {
+    addressConfirm()
+  }, [])
   return (
     <div className="px-6 py-8 border-r border-dark-600 flex flex-col h-full w-[358px] bg-dark-800 justify-between overflow-scroll no-scrollbar">
       <div className="flex flex-col gap-4 flex-1">
@@ -54,12 +63,11 @@ const Sidebar = () => {
             </Link>
           );
         })}
-
-        {address === ADMIN_ADDRESS && (
-          <Link href="/admin">
+        {myAddr === ADMIN_ADDRESS && (
+          <Link href="/owner-panel">
             <div
               className={`flex-start gap-3 p-2 rounded-lg text-dark-200 hover:text-white transition-colors ${
-                pathname === "/admin" && "bg-primary"
+                pathname === "/owner-panel" && "bg-primary"
               }`}
             >
               <Image
@@ -69,7 +77,7 @@ const Sidebar = () => {
                 height={32}
               />
               <span className="text-xl font-normal leading-[30px] tracking-normal text-left">
-                Admin Panel
+                Owner Panel
               </span>
             </div>
           </Link>

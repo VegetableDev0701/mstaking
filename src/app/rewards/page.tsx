@@ -1,88 +1,102 @@
 'use client'
 import { Chart } from "@/components/pages/rewards/Chart";
-import React from "react";
+import React, { useCallback, useMemo } from "react";
 import { useEffect, useState } from "react";
 import { dummyChartData } from "@/constants";
 import Rewards from "@/components/pages/rewards/Rewards";
 import { useDispatch, useSelector } from "react-redux";
 import { getCollections, getCollectionFromCA } from "@/lib/features/collectionSlice";
-import { Collection } from "@/interface/collection";
-import { getSMNFT } from "@/helper/queryHelper";
 import { ClaimHelper } from "@/helper/transaction";
-import { setCollectionStakedNFT, getTokens } from "@/lib/features/tokenSlice";
+import { getTokens } from "@/lib/features/tokenSlice";
 import { Token } from "@/interface/token";
+import { CollectionReward } from '@/interface/Reward'
+import { setRoute } from "@/lib/features/routerSlice";
+import { ActionHelper } from "@/helper/actionHelper";
+import {toast} from 'react-toastify'
 const page = () => {
   const collections = useSelector(getCollections)
   const dispatch = useDispatch()
-  const fetchAllStakedNFT = async () => {
-    for (let i = 0; i < collections.length; i++) {
-      const el: Collection = collections[i]
-      const data = await getSMNFT(el.Saddress)
-      dispatch(setCollectionStakedNFT({
-        keyname: `${el.Caddress}/${el.Ctitle}`,
-        tokens: data
-      }))
-    }
+  const routeConfig = async () => {
+    dispatch(setRoute({routeStr: 'Other'}))
   }
-  useEffect(() => {
-    fetchAllStakedNFT()
-  }, [])
   const tokens = useSelector(getTokens)
   const [totalCount, setTotalCount] = useState(0)
   const [totalStake, setTotalStake] = useState(0)
-  const [totalReward, setTotalReward] = useState(0.0)
+  const [totalRewards, setTotalRewards] = useState<CollectionReward[]>([])
+  const LockDate = new Date().getTime()
   const calcRewards = () => {
-    Object.keys(tokens).length && Object.keys(tokens).map((el: string) => {
-      const colData = useSelector(getCollectionFromCA(el.split('/')[0]))
-      const cycle = colData?.cycle ? colData.cycle : 100000
-      let amount = 0.0
-      for(let i =0; i<tokens[el].staked.length; i++) {
-        let tok = tokens[el].staked[i]
-        if (tok.start_timestamp > tok.end_timestamp) {
-          let period = tok.start_timestamp - tok.end_timestamp
-          if (period > cycle) {
-            if (colData && colData.auto_renewal) {
-              amount = amount + parseInt(colData.reward.amount) * (cycle/period)
-            } else if (colData && !colData.auto_renewal) {
-              amount = amount + parseInt(colData.reward.amount)
-            }
-          }
+    let tempRewards: CollectionReward[] = []
+    for (let i = 0; i < collections.length; i++) {
+      let indReward: CollectionReward = {
+        Caddress: collections[i].Caddress,
+        Saddress: collections[i].Saddress,
+        ClaimAmount: 0
+      }
+      const cycle = collections[i].cycle
+      const reward = parseInt(collections[i].cReward.amount)
+      let stakedToken = tokens[`${collections[i].Caddress}`].staked
+      stakedToken = stakedToken.filter((el: Token) => el.token_stake_time < el.token_end_time)
+      for (let j = 0; j < stakedToken.length; j++) {
+        const tk: Token = stakedToken[j]
+        let period = (new Date().getTime()) - parseInt(tk.token_stake_time.toString())/1000000
+        if (collections[i].auto_renewal) {
+          indReward.ClaimAmount = indReward.ClaimAmount + reward * Math.floor(period / cycle)
+        } else {
+          indReward.ClaimAmount = indReward.ClaimAmount + reward
         }
       }
-      setTotalReward(totalReward + amount)
-    })
+      tempRewards.push(indReward)
+    }
+    setTotalRewards(tempRewards)
   }
-  const calcStaked = () => {
-    Object.keys(tokens).length && Object.keys(tokens).map((el: string) => setTotalStake(totalStake + tokens[el].staked.filter((e: Token) => e.start_timestamp > e.end_timestamp).length))
+  const ClaimReward = async () => {
+    for (let i =0; i<collections.length; i++ ) {
+      let resVal = await ActionHelper(collections[i].Saddress, {claim:{}});
+      if (resVal == true) {
+        toast('Claim Success !', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'success'
+        });
+      } else {
+        toast('Claim failed !', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'error'
+        });
+      }
+    }
   }
   const calcTotal = () => {
-    Object.keys(tokens).length && Object.keys(tokens).map((el: string) => setTotalCount(totalCount + tokens[el].staked.filter((e: Token) => e.start_timestamp > e.end_timestamp).length + tokens[el].unstaked.length))  
-  }
-  const ClaimReward = () => {
-    Object.keys(tokens).length && Object.keys(tokens).map((el: string) => {
-      const colData = useSelector(getCollectionFromCA(el.split('/')[0]))
-      const cycle = colData?.cycle ? colData.cycle : 100000
-      for(let i =0; i<tokens[el].staked.length; i++) {
-        let tok = tokens[el].staked[i]
-        if (tok.start_timestamp > tok.end_timestamp) {
-          let period = tok.start_timestamp - tok.end_timestamp
-          if (period > cycle) {
-            // Claim invididual Token Reward
-            ClaimHelper(colData?.Saddress, {
-              claim_staking_reward: {
-                index: i
-              }
-            } )
-          }
-        }
+    let keys = Object.keys(tokens)
+    let total = 0
+    for (let i = 0; i < keys.length; i++) {
+      if (tokens[keys[i]].staked) {
+        total = total + tokens[keys[i]].staked.filter((el: Token) => parseInt(el.token_stake_time.toString())/1000000 > parseInt(el.token_end_time.toString())).length
       }
-    })
+      if (tokens[keys[i]].unstaked) {
+        total = total + tokens[keys[i]].unstaked.length
+      }
+    }
+    setTotalCount(total)
+  }
+  const calcStaked = () => {
+    let keys = Object.keys(tokens)
+    let total = 0
+    for (let i = 0; i < keys.length; i++) {
+      if (tokens[keys[i]].staked) {
+        console.log('keys: ', tokens[keys[i]], tokens[keys[i]].staked)
+        total = total + tokens[keys[i]].staked.filter((el: Token) => parseInt(el.token_stake_time.toString())/1000000 > parseInt(el.token_end_time.toString())).length
+      }
+    }
+    setTotalStake(total)
   }
   useEffect(() => {
-    calcRewards()
-    calcStaked()
     calcTotal()
-  }, [tokens])
+    calcStaked()
+    calcRewards()
+    routeConfig()
+  }, [])
   return (
     <div className="flex flex-col gap-7">
       <div className="flex flex-col gap-4">
@@ -95,14 +109,14 @@ const page = () => {
         <h3 className="text-2xl font-medium leading-10 tracking-[-0.02em] text-left text-dark-200">
           Rewards
         </h3>
-        <Rewards 
+        <Rewards
           getReward={ClaimReward}
           data={{
-          earnings: totalReward,
-          stakedNfts: totalStake,
-          lockDuration: new Date().getTime(),
-          nftsOwned: totalCount
-        }} />
+            earnings: totalRewards,
+            stakedNfts: totalStake,
+            lockDuration: LockDate,
+            nftsOwned: totalCount
+          }} />
       </div>
     </div>
   );

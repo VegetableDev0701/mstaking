@@ -6,10 +6,13 @@ import CustomBreakLine from "@/components/UI/CustomBreakLine";
 import { StackHelper, unStakeHelper } from '@/helper/transaction'
 import { Token } from "@/interface/token";
 import {toast} from 'react-toastify';
-import { setTokenStaked, setTokenUnStaked } from '@/lib/features/tokenSlice'
+import { 
+  setTokenStaked,
+  setTokenLocked, 
+  setTokenUnStaked } from '@/lib/features/tokenSlice'
 import { useDispatch } from "react-redux";
 import { CollectionToken } from "@/interface/token";
-const DEFAULT_UNSTAKE_FEE = 50000000;
+import { DEFAULT_STD_FEE } from "@injectivelabs/sdk-ts";
 const CollectionTabs = ({ tokens, selCollection }: { tokens: CollectionToken, selCollection: Collection }) => {
   const dispatch = useDispatch()
   const [activeTab, setActiveTab] = useState(1);
@@ -28,16 +31,25 @@ const CollectionTabs = ({ tokens, selCollection }: { tokens: CollectionToken, se
     },
   ];
   const allTokens = [...tokens.staked, ...tokens.unstaked]
-  const stackNFT =async (token_id: string) => {
+  const stackNFT =async (token_id: string[]) => {
+    if (!selCollection.cEnable) {
+      toast('NFT stacking Not Allowed !', {
+        hideProgressBar: true,
+        autoClose: 2000,
+        type: 'error'
+      });
+      return
+    }
     let ret = await StackHelper(
       selCollection.Caddress,
       {
-        send_nft: {
+        multi_staking: {
           contract: selCollection.Saddress,
           token_id: token_id,
           msg: '',
         },
-      }
+      },
+      selCollection.cTxFee
     );
     if (ret) {
       toast('NFT stacking Success !', {
@@ -46,7 +58,7 @@ const CollectionTabs = ({ tokens, selCollection }: { tokens: CollectionToken, se
         type: 'success'
       });
       dispatch(setTokenStaked({
-        collectionKey: `${selCollection.Caddress}/${selCollection.Ctitle}`,
+        collectionKey: `${selCollection.Caddress}`,
         tokenId: token_id
       }))
     } else {
@@ -58,27 +70,34 @@ const CollectionTabs = ({ tokens, selCollection }: { tokens: CollectionToken, se
     }
   }
 
-  const unStackNFT = async (token_id: string, index: number) => {
-    debugger;
+  const unstakeNFT1 = async (token: Token[]) => {
+    if (token.length == 0) {
+      toast('Please select NFT to Unstake', {
+        hideProgressBar: true,
+        autoClose: 2000,
+        type: 'error'
+      });
+      return;
+    }
+    let tempToken: Token[] = token.filter((el: Token) => (el.token_stake_time / 1000000 + selCollection.cLockDur) < (new Date().getTime()))
     let ret = await unStakeHelper(
       selCollection.Saddress,
       {
         unstake: {
-          index: index,
+          token_id: tempToken.map((el: Token) => el.token_id),
         },
       },
-      selCollection.unstake_fee,
-      DEFAULT_UNSTAKE_FEE
+      selCollection.cTxFee
     );
     if (ret) {
-      toast('NFT unStacking Success !', {
+      toast('NFT locked Success !', {
         hideProgressBar: true,
         autoClose: 2000,
         type: 'success'
       });
       dispatch(setTokenUnStaked({
-        collectionKey: `${selCollection.Caddress}/${selCollection.Ctitle}`,
-        tokenId: token_id
+        collectionKey: `${selCollection.Caddress}`,
+        tokenId: tempToken.map((el: Token) => el.token_id)
       }))
     } else {
       toast('Error Occur ', {
@@ -86,6 +105,85 @@ const CollectionTabs = ({ tokens, selCollection }: { tokens: CollectionToken, se
         autoClose: 2000,
         type: 'error'
       });
+    }
+  }
+
+  const unStackNFT2 = async (token: Token[]) => {
+    if (token.length == 0) {
+      toast('Please select NFT to Unstake', {
+        hideProgressBar: true,
+        autoClose: 2000,
+        type: 'error'
+      });
+      return;
+    }
+    let tempToken: Token[] = token.filter((el:Token) => el.token_end_time == 0);
+    if (tempToken.length > 0) {
+      let stakable: Token[] = token.filter((el: Token) => el.token_stake_time == 0)
+      if (stakable.length > 0) {
+        toast('Please select only staked NFT to Unstake', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'error'
+        });
+        return;
+      }
+      let ret = await unStakeHelper(
+        selCollection.Saddress,
+        {
+          unstake: {
+            token_id: tempToken.map((el: Token) => el.token_id),
+          },
+        },
+        selCollection.cTxFee
+      );
+      if (ret) {
+        toast('NFT locked Success !', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'success'
+        });
+        dispatch(setTokenLocked({
+          collectionKey: `${selCollection.Caddress}`,
+          tokenId: tempToken.map((el: Token) => el.token_id)
+        }))
+      } else {
+        toast('Error Occur ', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'error'
+        });
+      }
+    } else {
+      let ret = await unStakeHelper(
+        selCollection.Saddress,
+        {
+          early_unstake: {
+            token_id: token.map((el: Token) => el.token_id),
+          },
+        },
+        {
+          amount: parseInt(selCollection.cUnstakingFee.amount) * token.length,
+          denom: selCollection.cUnstakingFee.denom
+        }
+      );
+      if (ret) {
+        toast('NFT unstaked Success !', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'success'
+        });
+        dispatch(setTokenUnStaked({
+          collectionKey: `${selCollection.Caddress}`,
+          tokenId: tempToken.map((el: Token) => el.token_id)
+        }))
+      } else {
+        toast('Error Occur ', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'error'
+        });
+      }
     }
   }
 
@@ -112,15 +210,30 @@ const CollectionTabs = ({ tokens, selCollection }: { tokens: CollectionToken, se
           {tokens === undefined || tokens.staked.length === 0 && tokens.unstaked.length === 0 ? (
             <h1>No NFTs Found For This Collection.</h1>
           ) : (
-            allTokens.map((nft: Token) => (
-              (nft.start_timestamp > nft.end_timestamp && <NFTCard
-                key={nft.token_id}
-                tId={nft.token_id}
-                address={nft.token_address}
-                onClick={() => {}}
-                status={nft.start_timestamp < nft.end_timestamp || nft.start_timestamp == 0 ? 'passive': 'staked'}
-              />)
-            ))
+            <>
+            {
+              tokens.staked.map((nft: Token, ind) => (
+                nft.token_stake_time/1000000 >= nft.token_end_time/1000000 && <NFTCard
+                  key={nft.token_id}
+                  tId={nft.token_id}
+                  address={selCollection.Caddress}
+                  onClick={() => { selCollection.cModel ? unstakeNFT1([nft]): unStackNFT2([nft])}}
+                  status={"staked"}
+                />
+              ))
+            }
+            {
+              tokens.unstaked.map((nft) => (
+                <NFTCard
+                  key={nft.token_id}
+                  tId={nft.token_id}
+                  address={selCollection.Caddress}
+                  onClick={() => {stackNFT([nft.token_id])}}
+                  status={"active"}
+                />
+              ))
+            }
+            </>
           )}
         </div>
       )}
@@ -130,12 +243,12 @@ const CollectionTabs = ({ tokens, selCollection }: { tokens: CollectionToken, se
           tokens.staked.length === 0 ? (
             <h1>You Have No NFTs Staked In This Collection.</h1>
           ) : (
-            tokens.staked.map((nft, ind) => (
-              nft.start_timestamp > nft.end_timestamp && <NFTCard
+            tokens.staked.map((nft: Token, ind) => (
+              nft.token_stake_time > nft.token_end_time && <NFTCard
                 key={nft.token_id}
                 tId={nft.token_id}
-                address={nft.token_address}
-                onClick={() => {unStackNFT(nft.token_id, ind)}}
+                address={selCollection.Caddress}
+                onClick={() => {selCollection.cModel ? unstakeNFT1([nft]): unStackNFT2([nft])}}
                 status={"staked"}
               />
             ))
@@ -152,8 +265,8 @@ const CollectionTabs = ({ tokens, selCollection }: { tokens: CollectionToken, se
               <NFTCard
                 key={nft.token_id}
                 tId={nft.token_id}
-                address={nft.token_address}
-                onClick={() => {stackNFT(nft.token_id)}}
+                address={selCollection.Caddress}
+                onClick={() => {stackNFT([nft.token_id])}}
                 status={"active"}
               />
             ))
