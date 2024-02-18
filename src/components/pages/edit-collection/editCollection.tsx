@@ -19,61 +19,50 @@ const EditCollection = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File>();
   const colData: Collection = useSelector(getSelectedCollection)
-  const [CBackground ,setCBackground] = useState<string>(colData.CBackground)
+  const [CBackground ,setCBackground] = useState<string>(colData.cBkgimg)
   const [collectionAddr, setCollectionAddr] = useState<string>(colData.Caddress)
-  const [collectionTitle, setCollectionTitle] = useState<string>(colData.Ctitle)
-  const [collectionDes, setCollectionDes] = useState<string>(colData.Cdescription)
-  const [status, setStatus] = useState<boolean>(colData.enabled)
-  const [stakingDuration, setStakingDuration] = useState<number>(colData.cycle);
-  const [restartAble, setRestartAble] = useState<boolean>(colData.auto_renewal);
-
-  const [dailyAirdrops, setDailyAirdrops] = useState<number>(parseInt(colData.airdrop.amount));
-
-  const [receiverAddress, setReceiverAddress] = useState<string>(colData.fee_receiver);
-  const [reward, setReward] = useState<number>(parseInt(colData.reward.amount))
-  const [unstakingFee, setUnstakingFee] = useState<number>(parseInt(colData.unstake_fee.amount));
-  const [feeShare, setFeeShare] = useState<number>(colData.unstake_fee_share)
+  const [collectionTitle, setCollectionTitle] = useState<string>(colData.cTitle)
+  const [collectionDes, setCollectionDes] = useState<string>(colData.cDescription)
+  const [status, setStatus] = useState<boolean>(colData.cEnable)
+  const [stakingDuration, setStakingDuration] = useState<number>(colData.cDuration);
+  const [restartAble, setRestartAble] = useState<boolean>(colData.cRestart);
+  const [dailyAirdrops, setDailyAirdrops] = useState<number>(parseInt(colData.cDailyAirdrop.amount));
+  const [receiverAddress, setReceiverAddress] = useState<string>(colData.cUnstakingFeeReceiver);
+  const [reward, setReward] = useState<number>(parseInt(colData.cReward.amount))
+  const [unstakingFee, setUnstakingFee] = useState<number>(parseInt(colData.cUnstakingFee.amount));
+  const [feeShare, setFeeShare] = useState<number>(colData.cUnstakingFeeShare)
   const submitCollection = async () => {
 
     const bodyData = {
       Caddress: collectionAddr,
-      Ctitle: collectionTitle,
-      Cdescription: collectionDes,
-      cycle: stakingDuration,
-      auto_renewal: restartAble,
-      airdrop: {
+      cTitle: collectionTitle,
+      cDescription: collectionDes,
+      cDuration: stakingDuration,
+      cRestart: restartAble,
+      cDailyAirdrop: {
         amount: dailyAirdrops.toString(),
         denom: 'inj'
       },
-      fee_receiver: receiverAddress,
-      unstake_fee_share: feeShare,
-      unstake_fee: {
+      cUnstakingFeeReceiver: receiverAddress,
+      cUnstakingFeeShare: feeShare,
+      cUnstakingFee: {
         amount: unstakingFee.toString(),
         denom: 'inj'
       },
-      reward: {
+      cReward: {
         amount: reward.toString(),
         denom: 'inj'
       },
-      enabled: status
-    }
-    const res = await (await fetch('/api/collection/editCollection', {
-      method: 'PUT', body: JSON.stringify({
-        Caddress: collectionAddr,
-        Ctitle: collectionTitle,
-        Cdescription: collectionDes
-      })
-    })).json()
-    if (res.status == false) {
-      toast('Maybe server Error ! ', {
-        hideProgressBar: true,
-        autoClose: 2000,
-        type: 'error'
-      });
-      return;
+      cEnable: status
     }
     const retAction = await ActionHelper(colData.Saddress, {
-      set_collection_data: {
+      update_collection: {
+        col_address: bodyData.Caddress,
+        col_admin: colData.cAdmin,
+        col_title: bodyData.cTitle,
+        col_description: bodyData.cDescription,
+        col_bkgimg: CBackground,
+        col_restart: bodyData.cRestart,
         address: colData.Caddress,
         reward: bodyData.reward,
         airdrop: bodyData.airdrop,

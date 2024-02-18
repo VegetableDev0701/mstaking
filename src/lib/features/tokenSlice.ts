@@ -35,46 +35,66 @@ export const tokenSlice = createSlice({
         state.tokens[keyname].unstaked = tokens.unstaked
       }
     },
-    setTokenStaked: (state, action: PayloadAction<{ collectionKey: string, tokenId: string}>) => {
+    setTokenStaked: (state, action: PayloadAction<{ collectionKey: string, tokenId: string[]}>) => {
       const { tokenId, collectionKey } = action.payload
       // Remove element from unstaked array
       let unstaked: Token[] = state.tokens[action.payload.collectionKey].unstaked
-      state.tokens[collectionKey].unstaked = unstaked.filter((el:Token) => el.token_id!=tokenId )
+
+      state.tokens[collectionKey].unstaked = unstaked.filter((el:Token) => tokenId.findIndex(iEle => iEle == el.token_id ) != -1 )
       // Add element to staked arry
-      const token_address = collectionKey.split('/')[0]
-      state.tokens[collectionKey].staked.push({
-        token_address: token_address,
-        token_id: tokenId,
-        start_timestamp: new Date().getTime(),
-        end_timestamp: 0,
-        airdrop_claim_timestamp: 0,
-        is_paid: false
-      })
+      const token_address = collectionKey
+      for (let i =0; i<tokenId.length; i++) {
+        state.tokens[collectionKey].staked.push({
+          token_id: tokenId[i],
+          token_stake_time: new Date().getTime() * 1000000,
+          token_end_time: 0,
+          token_reward: {
+            amount: "",
+            denom: "inj"
+          }
+        })
+      }
     },
-    setTokenUnStaked: (state, action: PayloadAction<{ collectionKey: string, tokenId: string}>) => {
+    setTokenLocked: (state, action: PayloadAction<{collectionKey: string, tokenId: string[]}>) => {
       const { tokenId, collectionKey } = action.payload
-      const token_address = collectionKey.split('/')[0]
-      // set element unstaked from staked array
       let staked: Token[] = state.tokens[collectionKey].staked
       state.tokens[collectionKey].staked = staked.map((el: Token) => {
-        if (el.token_id == tokenId) {
+        if (tokenId.findIndex(eI => eI == el.token_id) != -1) {
           return {
             ...el,
-            end_timestamp: new Date().getTime()
+            token_end_time: (new Date().getTime()) * 1000000
           }
         } else {
-          return el
+          return {
+            ...el
+          }
+        }
+      })
+    },
+    setTokenUnStaked: (state, action: PayloadAction<{ collectionKey: string, tokenId: string[]}>) => {
+      const { tokenId, collectionKey } = action.payload
+      const token_address = collectionKey
+      // set element unstaked from staked array
+      let staked: Token[] = state.tokens[collectionKey].staked
+      state.tokens[collectionKey].staked = staked.filter((el: Token) => {
+        if (tokenId.findIndex((eI) => eI == el.token_id) != -1) {
+          return true
+        } else {
+          return false
         }
       })
       // Add element to unstaked array
-      state.tokens[collectionKey].unstaked.push({
-        token_address: token_address,
-        token_id: tokenId,
-        start_timestamp: 0,
-        end_timestamp: 0,
-        airdrop_claim_timestamp: 0,
-        is_paid: false
-      })
+      for (let i = 0;i<tokenId.length; i++) {
+        state.tokens[collectionKey].unstaked.push({
+          token_id: tokenId[i],
+          token_stake_time: 0,
+          token_end_time: 0,
+          token_reward: {
+            amount: "",
+            denom: ""
+          }
+        })
+      }      
     },
     setCollectionStakedNFT: (state, action: PayloadAction<{keyname: string, tokens: Token[] }>) => {
       const { keyname, tokens } = action.payload
@@ -91,7 +111,8 @@ export const tokenSlice = createSlice({
 // Action creators are generated for each case reducer function
 export const { setAllTokens, 
   setCollectionTokens, 
-  setTokenStaked, 
+  setTokenStaked,
+  setTokenLocked,
   setTokenUnStaked,
   setCollectionStakedNFT } = tokenSlice.actions
 export const getTokens = (state: any) => state.token.tokens;
@@ -125,7 +146,7 @@ export const getStakedTotalCOunt = (state: any) => {
   let count = 0
   if (!state.token.tokens) return 0;
   Object.keys(state.token.tokens).map((key: string, index: number) => {
-    count = count + state.token.tokens[key].staked.filter((el: Token) => el.start_timestamp >= el.end_timestamp ).length
+    count = count + state.token.tokens[key].staked.filter((el: Token) => el.token_stake_time >= el.token_end_time ).length
   })
   return count
 }

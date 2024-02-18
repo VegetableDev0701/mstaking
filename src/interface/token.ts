@@ -1,10 +1,11 @@
 export interface Token {
-  token_address: string,
   token_id: string,
-  start_timestamp: number,
-  end_timestamp: number,
-  airdrop_claim_timestamp: number,
-  is_paid: boolean
+  token_stake_time: number,
+  token_end_time: number,
+  token_reward: {
+    amount: string,
+    denom: string
+  }
 }
 
 export interface CollectionToken {

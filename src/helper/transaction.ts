@@ -97,12 +97,7 @@ export const StackHelper = async (
     let { txRaw, signDoc } = createTransaction({
       pubKey,
       chainId,
-      fee: {
-        amount: [fee],
-        gas: fee.amount
-      },
-      // fee: DEFAULT_STD_FEE,
-      // fee: DEFAULT_UNSTAKE_FEE,
+      fee: DEFAULT_STD_FEE,
       message: msgs,
       sequence: baseAccount.sequence,
       timeoutHeight: timeoutHeight.toNumber(),
@@ -125,9 +120,6 @@ export const StackHelper = async (
 
     /** Broadcast transaction */
     const response = await txService.broadcast(txRaw);
-
-    // const txHash = await broadcastTx(ChainId.Mainnet, txRaw);
-    // const response = await new TxRestClient(restEndpoint).fetchTxPoll(txHash);
     if (response.code == 0) {
       console.log('Execute success.');
       return true

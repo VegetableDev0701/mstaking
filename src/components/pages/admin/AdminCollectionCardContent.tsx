@@ -23,22 +23,22 @@ const AdminCollectionCardContent = ({
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File>();
 
-  const [CBackground, setCBackground] = useState<string>(colData.CBackground)
+  const [CBackground, setCBackground] = useState<string>(colData.cBkgimg)
 
   // Collection Information
-  const [title, setTitle] = useState<string>(colData.Ctitle)
-  const [description, setDescription] = useState<string>(colData.Cdescription)
-  const [stakingDur, setStakingDur] = useState<number>(colData.cycle)
-  const [autoRestart, setAutoRestart] = useState<boolean>(colData.auto_renewal)
-  const [lockDur, setLockDur] = useState<number>(colData.unstake_lock_period)
-  const [stakingType, setStakingType] = useState<number>(colData.staking_model)
-  const [airdrop, setAirDrop] = useState<string>(colData.airdrop.amount)
-  const [nairdrop, setNAirDrop] = useState<string>(colData.nairdrop.amount)
-  const [rewardByrank, setRewardRnk] = useState<boolean>(colData.reward_by_rank)
-  const [feeShare, setFeeShare] = useState<number>(colData.unstake_fee_share)
-  const [unstakeFee, setUnstakeFee] = useState<string>(colData.unstake_fee.amount)
-  const [feeReciever, setFeeReceiver] = useState<string>(colData.fee_receiver)
-  const [reward, setReward] = useState<string>(colData.reward.amount)
+  const [title, setTitle] = useState<string>(colData.cTitle)
+  const [description, setDescription] = useState<string>(colData.cDescription)
+  const [stakingDur, setStakingDur] = useState<number>(colData.cDuration)
+  const [autoRestart, setAutoRestart] = useState<boolean>(colData.cRestart)
+  const [lockDur, setLockDur] = useState<number>(colData.cLockDur)
+  const [stakingType, setStakingType] = useState<boolean>(colData.cModel)
+  const [airdrop, setAirDrop] = useState<string>(colData.cDailyAirdrop.amount)
+  const [nairdrop, setNAirDrop] = useState<string>(colData.cDailyNAirdrop.amount)
+  const [rewardByrank, setRewardRnk] = useState<boolean>(colData.cRewardbyRank)
+  const [feeShare, setFeeShare] = useState<number>(colData.cUnstakingFeeShare)
+  const [unstakeFee, setUnstakeFee] = useState<string>(colData.cUnstakingFee.amount)
+  const [feeReciever, setFeeReceiver] = useState<string>(colData.cUnstakingFeeReceiver)
+  const [reward, setReward] = useState<string>(colData.cReward.amount)
 
   const uploadCollectionImage = async (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) {
@@ -57,7 +57,7 @@ const AdminCollectionCardContent = ({
       dispatch(setCollectionData({
         data: {
           ...colData,
-          CBackground: retVal.CBackground
+          cBkgimg: retVal.CBackground
         }
       }))
       toast('Collection Background Updated !', {
@@ -74,86 +74,71 @@ const AdminCollectionCardContent = ({
     }
   }
 
-  const changeCollectionData =async () => {
-    const res = await (await fetch('/api/collection/editCollection', {
-      method: 'PUT', body: JSON.stringify({
-        Caddress: colData.Caddress,
-        Ctitle: title,
-        Cdescription: description
-      })
-    })).json()
-    if (res.status == false) {
-      toast('Maybe server Error ! ', {
-        hideProgressBar: true,
-        autoClose: 2000,
-        type: 'error'
-      });
-      return;
-    }
-
-    let bodyData: Collection = {
+  const changeCollectionData = async () => {
+    const bodyData = {
       ...colData,
-      admin: colData.admin,
-      staking_model: stakingType,
-      unstake_fee: {
-        denom: 'inj',
-        amount: unstakeFee
+      cTitle: title,
+      cDescription: description,
+      cBkgimg: CBackground,
+      cRestart: autoRestart,
+      cModel: stakingType,
+      cDuration: stakingDur,
+      cLockDur: lockDur,
+      cDailyAirdrop: {
+        amount: airdrop,
+        denom: 'inj'
       },
-      unstake_fee_share: feeShare,
-      reward: {
-        denom: 'inj',
-        amount: reward
+      cDailyNAirdrop: {
+        amount: nairdrop,
+        denom: 'inj'
       },
-      airdrop: {
-        denom: 'inj',
-        amount: airdrop
+      cReward: {
+        amount: reward,
+        denom: 'inj'
       },
-      nairdrop: {
-        denom: 'inj',
-        amount: nairdrop
+      cRewardbyRank: rewardByrank,
+      cUnstakingFeeReceiver: feeReciever,
+      cUnstakingFee: {
+        amount: unstakeFee,
+        denom: 'inj'
       },
-      auto_renewal: autoRestart,
-      cycle: stakingDur,
-      enabled: colData.enabled,
-      spots: 0,
-      unstake_lock_period: lockDur,
-      fee_receiver: feeReciever,
-      tx_fee: colData.tx_fee,
-      reward_by_rank: rewardByrank,
-      Ctitle: title,
-      Cdescription: description
+      cUnstakingFeeShare: feeShare
     }
-    
     const retAction = await ActionHelper(colData.Saddress, {
-      set_collection: {
-        address: colData.Caddress,
-        owner: colData.admin,
-        staking_model: stakingType,
-        unstake_fee: {
-          denom: 'inj',
-          amount: unstakeFee
-        },
-        unstake_fee_share: feeShare,
-        reward: {
-          denom: 'inj',
-          amount: reward
-        },
-        airdrop: {
+      update_collection: {
+        col_address: colData.Caddress,
+        col_admin: colData.cAdmin,
+        col_title: title,
+        col_description: description,
+        col_bkgimg: CBackground,
+        col_restart: autoRestart,
+        col_model: stakingType,
+        col_duration: stakingDur,
+        col_lock_dur: lockDur,
+        col_daily_airdrop: {
           denom: 'inj',
           amount: airdrop
         },
-        nairdrop: {
+        col_daily_nairdrop: {
           denom: 'inj',
           amount: nairdrop
         },
-        auto_renewal: autoRestart,
-        cycle: stakingDur,
-        enabled: colData.enabled,
-        spots: 0,
-        unstake_lock_period: lockDur,
-        fee_receiver: feeReciever,
-        tx_fee: colData.tx_fee,
-        reward_by_rank: rewardByrank
+        col_reward: {
+          denom: 'inj',
+          amount: reward
+        },
+        col_reward_rank: rewardByrank,
+        col_unstaking_fee_receiver: feeReciever,
+        col_unstaking_fee: {
+          denom: 'inj',
+          amount: unstakeFee
+        },
+        col_unstaking_fee_share: feeShare,
+        col_tx_fee: {
+          denom: 'inj',
+          amount: colData.cTxFee.amount
+        },
+        col_enable: colData.cEnable
       }
     })
     if (retAction) {
@@ -163,7 +148,7 @@ const AdminCollectionCardContent = ({
         type: 'success'
       })
       router.push(`/collections/${colData.Caddress}`)
-      dispatch(setCollectionData({data: bodyData}))
+      dispatch(setCollectionData({ data: bodyData }))
     } else {
       toast('Contract Error!', {
         hideProgressBar: true,
@@ -192,6 +177,9 @@ const AdminCollectionCardContent = ({
     }
   }
 
+  const sendoutNAirdrop = async () => {
+
+  }
   return (
     <div className="flex flex-col gap-2.5">
       <InfoCard title="Collection Title">
@@ -253,7 +241,7 @@ const AdminCollectionCardContent = ({
                 key={index}
                 className={`px-2.5 py-1.5 rounded-[40px] text-base font-normal leading-4 tracking-[-0.01em] text-left text-dark-100 cursor-pointer transition-all ${stakingType === index + 1 && "bg-dark-800"
                   }`}
-                onClick={() => setStakingType(index + 1)}
+                onClick={() => setStakingType(!stakingType)}
               >
                 {model}
               </div>
@@ -278,7 +266,7 @@ const AdminCollectionCardContent = ({
           height={24}
           alt="share-icon"
           className="cursor-pointer"
-          onClick={() => sendoutAirDrop()}
+          onClick={() => sendoutNAirdrop()}
         />
       </InfoCard>
       <InfoCard title="Daily airdrops of INJ   ">

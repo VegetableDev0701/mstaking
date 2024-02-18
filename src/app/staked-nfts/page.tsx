@@ -3,10 +3,11 @@ import {toast} from 'react-toastify'
 import React from "react";
 import NFTCollectionShow from "@/components/pages/staked-nfts/NFTCollectionShow";
 import CustomBreakLine from "@/components/UI/CustomBreakLine";
-import { getTokens, getTokenCount, setCollectionStakedNFT } from '@/lib/features/tokenSlice'
+import { getTokens, getTokenCount, setCollectionStakedNFT, getCollectionTokens } from '@/lib/features/tokenSlice'
 import { getCollections } from '@/lib/features/collectionSlice'
 import { useSelector, useDispatch } from 'react-redux'
 import { Collection } from "@/interface/collection";
+import { CollectionToken } from '@/interface/token';
 import { getSMNFT } from "@/helper/queryHelper";
 import { unStakeHelper } from "@/helper/transaction";
 import { queryHelper } from '@/helper/queryHelper';
@@ -22,13 +23,8 @@ const page = () => {
   const routeConfig = async () => {
     dispatch(setRoute({routeStr: 'Other'}))
   }
-  const getCol_test = async () => {
-    let col = await queryHelper('inj1j3de04txnndp94v37hfl0k906z0f47crrl0xm3', 'get_collections', {});
-    console.log(col);
-  }
   useEffect(() => {
     routeConfig()
-    getCol_test()
   }, [])
   const tokens = useSelector(getTokens)
   const totalStaked = useSelector(getStakedTotalCOunt)
@@ -53,7 +49,7 @@ const page = () => {
       });
       dispatch(setTokenUnStaked({
         collectionKey: cTitle,
-        tokenId: token_id
+        tokenId: [token_id]
       }))
     } else {
       toast('Error Occur ', {
@@ -73,6 +69,13 @@ const page = () => {
       }
     })
   }
+  const getCollectionStakedTokens = (Caddress: string) => {
+    if (tokens[Caddress]) {
+      return tokens[Caddress].staked
+    } else {
+      return []
+    }
+  }
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col gap-5">
@@ -83,11 +86,13 @@ const page = () => {
         </div>
         <CustomBreakLine />
       </div>
-      {Object.keys(tokens).length && Object.keys(tokens).map((el: string, index: number) => {
-        return (
-          <NFTCollectionShow key={index} title={el} tokens={tokens[el].staked.filter((el: Token) => el.start_timestamp >= el.end_timestamp)} />
-        );
-      })}
+      {
+        collections.map((el: Collection) => {
+          return (
+            <NFTCollectionShow key={el._id} colData={el} tokens={getCollectionStakedTokens(el.Caddress)} />
+          );
+        })
+      }
     </div>
   );
 };
