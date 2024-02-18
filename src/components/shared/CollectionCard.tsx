@@ -26,7 +26,7 @@ const CollectionCard = ({
     >
       <div className="flex-start gap-4">
         <span className="text-sm font-medium leading-4 tracking-[-0.01em] text-left text-dark-200">
-          {''}
+          {""}
         </span>
         <div className="flex-start gap-2 w-full">
           <Image
@@ -52,7 +52,7 @@ const CollectionCard = ({
                 )}
               </div>
               <p className="text-base font-semibold leading-4 tracking-[-0.01em] text-left text-white">
-{/*                 {stakedNfts ? stakedNfts?.length : 0}{" "}
+                {/*                 {stakedNfts ? stakedNfts?.length : 0}{" "}
                 <span className="text-sm font-medium leading-4 tracking-[-0.01em] text-dark-200">
                   Staked
                 </span> */}
