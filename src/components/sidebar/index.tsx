@@ -63,7 +63,6 @@ const Sidebar = () => {
             </Link>
           );
         })}
-
         {myAddr === ADMIN_ADDRESS && (
           <Link href="/owner-panel">
             <div

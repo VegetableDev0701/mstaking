@@ -8,6 +8,7 @@ const CustomSwitchButton = ({
   onChangeParent: (bool: boolean) => void;
 }) => {
   const [checked, setChecked] = React.useState(initState);
+
   const onChange = (value: boolean) => {
     setChecked(value);
     onChangeParent(value);

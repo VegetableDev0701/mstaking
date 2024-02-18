@@ -4,37 +4,45 @@ import NFTCard from "@/components/shared/NFTCardSM";
 import React from "react";
 import { Token } from "@/interface/token";
 import { unStakeHelper } from "@/helper/transaction";
-import { getSaddress, getUnstakeFee } from "@/lib/features/collectionSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { setTokenUnStaked } from '@/lib/features/tokenSlice';
+import { setTokenUnStaked, setTokenLocked } from '@/lib/features/tokenSlice';
+import { Collection } from '@/interface/collection';
 const DEFAULT_UNSTAKE_FEE = 50000000;
 
-const NFTCollectionShow = ({ tokens, title }: { tokens: Token[], title: string }) => {
-  const cTitle = title.split('/')[1]
-  const cAddress = title.split('/')[0]
-  const Saddress = useSelector(getSaddress(cAddress))
-  const unStakeFee = useSelector(getUnstakeFee(cAddress))
+const NFTCollectionShow = ({ tokens, colData }: { tokens: Token[], colData: Collection }) => {
+  const cTitle = colData.cTitle
+  const cAddress = colData.Caddress
+  const Saddress = colData.Saddress
+  const unStakeFee = colData.cUnstakingFee
   const dispatch = useDispatch()
-  const unStackNFT = async (token_id: string, index: number) => {
+  const unstakAll1 = async () => {
+    if (tokens.length == 0) {
+      toast('No NFT to Unstake', {
+        hideProgressBar: true,
+        autoClose: 2000,
+        type: 'error'
+      });
+      return;
+    }
+    let tempToken: Token[] = tokens.filter((el: Token) => (el.token_stake_time / 1000000 + colData.cLockDur) < (new Date().getTime()))
     let ret = await unStakeHelper(
-      Saddress,
+      colData.Saddress,
       {
         unstake: {
-          index: index,
+          token_id: tempToken.map((el: Token) => el.token_id),
         },
       },
-      unStakeFee,
-      DEFAULT_UNSTAKE_FEE
+      colData.cTxFee
     );
     if (ret) {
-      toast('NFT unStacking Success !', {
+      toast('NFT locked Success !', {
         hideProgressBar: true,
         autoClose: 2000,
         type: 'success'
       });
       dispatch(setTokenUnStaked({
-        collectionKey: cTitle,
-        tokenId: token_id
+        collectionKey: `${colData.Caddress}`,
+        tokenId: tempToken.map((el: Token) => el.token_id)
       }))
     } else {
       toast('Error Occur ', {
@@ -44,10 +52,81 @@ const NFTCollectionShow = ({ tokens, title }: { tokens: Token[], title: string }
       });
     }
   }
-  const unStakeAllNFT = () => {
-    for(let i =0;i<tokens.length; i++ ){
-      if (tokens[i].end_timestamp < tokens[i].start_timestamp) {
-        unStackNFT(tokens[i].token_id, i)
+  const unstakAll2 = async () => {
+    if (tokens.length == 0) {
+      toast('No NFT to Unstake', {
+        hideProgressBar: true,
+        autoClose: 2000,
+        type: 'error'
+      });
+      return;
+    }
+    let tempToken: Token[] = tokens.filter((el:Token) => el.token_end_time == 0);
+    if (tempToken.length > 0) {
+      let stakable: Token[] = tokens.filter((el: Token) => el.token_stake_time == 0)
+      if (stakable.length > 0) {
+        toast('Please select only staked NFT to Unstake', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'error'
+        });
+        return;
+      }
+      let ret = await unStakeHelper(
+        colData.Saddress,
+        {
+          unstake: {
+            token_id: tempToken.map((el: Token) => el.token_id),
+          },
+        },
+        colData.cTxFee
+      );
+      if (ret) {
+        toast('NFT locked Success !', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'success'
+        });
+        dispatch(setTokenLocked({
+          collectionKey: `${colData.Caddress}`,
+          tokenId: tempToken.map((el: Token) => el.token_id)
+        }))
+      } else {
+        toast('Error Occur ', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'error'
+        });
+      }
+    } else {
+      let ret = await unStakeHelper(
+        colData.Saddress,
+        {
+          early_unstake: {
+            token_id: tokens.map((el: Token) => el.token_id),
+          },
+        },
+        {
+          amount: parseInt(colData.cUnstakingFee.amount) * tokens.length,
+          denom: colData.cUnstakingFee.denom
+        }
+      );
+      if (ret) {
+        toast('NFT unstaked Success !', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'success'
+        });
+        dispatch(setTokenUnStaked({
+          collectionKey: `${colData.Caddress}`,
+          tokenId: tempToken.map((el: Token) => el.token_id)
+        }))
+      } else {
+        toast('Error Occur ', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'error'
+        });
       }
     }
   }
@@ -58,18 +137,18 @@ const NFTCollectionShow = ({ tokens, title }: { tokens: Token[], title: string }
           {cTitle} ({tokens.length || 0})
         </h3>
         { tokens.length ? 
-        <Button className="bg-secondary" onClick={() => {}}>
+        <Button className="bg-secondary" onClick={() => {colData.cModel ? unstakAll1() : unstakAll2()}}>
           Unstake Full Collection
         </Button> : ''}
       </div>
       <div className="flex-start gap-x-6 flex-wrap gap-y-4">
         {tokens?.map((nft, ind) => {
           return (
-            nft.start_timestamp >= nft.end_timestamp && <NFTCard
+            nft.token_stake_time >= nft.token_end_time && <NFTCard
               key={ind}
-              address={nft.token_address}
+              address={colData.Caddress}
               tId={nft.token_id}
-              onClick={() => {unStakeAllNFT()}}
+              onClick={() => {}}
               status="staked"
             />
           );

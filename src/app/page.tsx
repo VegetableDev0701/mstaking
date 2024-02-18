@@ -26,19 +26,18 @@ export default function Home() {
   const fetchCollectioNFT = async (colData: any) => {
     const cAddress: string = colData.Caddress
     const sAddress: string = colData.Saddress
-    const collectionNFT = await getCollectionNFT(cAddress)
-    const smNFT = await getSMNFT(sAddress)
+    const collectionNFT = await getCollectionNFT(cAddress, myAddr)
+    const smNFT = await getSMNFT(sAddress, myAddr)
     dispatch(setCollectionTokens({
-      keyname: `${cAddress}/${colData.Ctitle}`,
+      keyname: `${cAddress}`,
       tokens: {
         unstaked: collectionNFT,
         staked: smNFT
       }
     }))
-    console.log('Collection NFT Data...')
-    console.log('ColData: ', colData, 'NFT', collectionNFT, 'staked', smNFT)
   }
   const fetchCollections = async () => {
+    await fetchAddress()
     let cols = await (await fetch('/api/collection/getCollections')).json()
     dispatch(setCollections(cols))
     for(let i =0;i<cols.length ; i++ ) {
@@ -57,7 +56,7 @@ export default function Home() {
   }
   useEffect(() => {
     fetchCollections()
-    fetchRewards()
+    // fetchRewards()
     routeConfig()
   }, [])
   return (
@@ -67,10 +66,6 @@ export default function Home() {
         collections={collections}
       />
       <TrendingCollections />
-      <FeaturedSection
-        heading="Winner Communities"
-        collections={collections}
-      />
     </main>
   );
 }

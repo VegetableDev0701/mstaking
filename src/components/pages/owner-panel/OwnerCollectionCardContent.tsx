@@ -21,13 +21,13 @@ const OwnerCollectionCardContent = ({
   const router = useRouter()
   const [owner1, setOwner1] = useState<string>('')
   const [owner2, setOwner2] = useState<string>('')
-  const [feeReceiver, setFeeReciever] = useState<string>(colData.fee_receiver)
-  const [tx_fee, setFeeAmount] = useState<string>(colData.tx_fee.amount)
-  const [status, setStatus] = useState<boolean>(colData.enabled)
-  const [unstakingFee, setUnstakingFee] = useState<string>(colData.unstake_fee.amount)
-  const [feeShare, setFeeShare] = useState<number>(colData.unstake_fee_share)
-  const [title, setTile] = useState<string>(colData.Ctitle)
-  const [admin, setAdmin] = useState<string>(colData.admin)
+  const [feeReceiver, setFeeReciever] = useState<string>(colData.cUnstakingFeeReceiver)
+  const [tx_fee, setFeeAmount] = useState<string>(colData.cTxFee.amount)
+  const [status, setStatus] = useState<boolean>(colData.cEnable)
+  const [unstakingFee, setUnstakingFee] = useState<string>(colData.cUnstakingFee.amount)
+  const [feeShare, setFeeShare] = useState<number>(colData.cUnstakingFeeShare)
+  const [title, setTile] = useState<string>(colData.cTitle)
+  const [admin, setAdmin] = useState<string>(colData.cAdmin)
 
   const fetchCollectionConfig = async () => {
     const retConfig = await queryHelper(colData.Saddress, "get_config", {});
@@ -49,23 +49,8 @@ const OwnerCollectionCardContent = ({
   }, [])
 
   const changeCollection = async () => {
-    const res = await (await fetch('/api/collection/editCollection', {
-      method: 'PUT', body: JSON.stringify({
-        Caddress: colData.Caddress,
-        Ctitle: title,
-        Cdescription: colData.Cdescription
-      })
-    })).json()
-    if (res.status == false) {
-      toast('Maybe server Error ! ', {
-        hideProgressBar: true,
-        autoClose: 2000,
-        type: 'error'
-      });
-      return;
-    }
     const retConfig = await ActionHelper(colData.Saddress, {
-      transfer_ownership: {
+      change_owner_ship: {
         new_owner: owner1
       }
     })
@@ -79,52 +64,39 @@ const OwnerCollectionCardContent = ({
     }
     let bodyData: Collection = {
       ...colData,
-      admin: admin,
-      staking_model: colData.staking_model,
-      unstake_fee: {
+      cAdmin: admin,
+      cUnstakingFee: {
         amount: unstakingFee,
-        denom: colData.unstake_fee.denom
+        denom: colData.cUnstakingFee.denom
       },
-      unstake_fee_share: feeShare,
-      reward: colData.reward,
-      airdrop: colData.airdrop,
-      nairdrop: colData.nairdrop,
-      auto_renewal: colData.auto_renewal,
-      cycle: colData.cycle,
-      enabled: status,
-      spots: 0,
-      fee_receiver: feeReceiver,
-      unstake_lock_period: colData.unstake_lock_period,
-      tx_fee: {
+      cUnstakingFeeShare: feeShare,
+      cEnable: status,
+      cUnstakingFeeReceiver: feeReceiver,
+      cTxFee: {
         amount: tx_fee,
-        denom: colData.tx_fee.denom
-      },
-      reward_by_rank: colData.reward_by_rank
+        denom: colData.cTxFee.denom
+      }
     }
     const retAction = await ActionHelper(colData.Saddress, {
-      set_collection: {
-        address: colData.Caddress,
-        owner: admin,
-        staking_model: colData.staking_model,
-        unstake_fee: {
-          amount: unstakingFee,
-          denom: colData.unstake_fee.denom
-        },
-        unstake_fee_share: feeShare,
-        reward: colData.reward,
-        airdrop: colData.airdrop,
-        nairdrop: colData.nairdrop,
-        auto_renewal: colData.auto_renewal,
-        cycle: colData.cycle,
-        enabled: status,
-        spots: 0,
-        fee_receiver: feeReceiver,
-        unstake_lock_period: colData.unstake_lock_period,
-        tx_fee: {
-          amount: tx_fee,
-          denom: colData.tx_fee.denom
-        },
-        reward_by_rank: colData.reward_by_rank
+      update_collection: {
+        col_address: colData.Caddress,
+        col_admin: admin,
+        col_title: title,
+        col_description: colData.cDescription,
+        col_bkgimg: colData.cBkgimg,
+        col_restart: colData.cRestart,
+        col_model: colData.cModel,
+        col_duration: colData.cDuration,
+        col_lock_dur: colData.cLockDur,
+        col_daily_airdrop: colData.cDailyAirdrop,
+        col_daily_nairdrop: colData.cDailyNAirdrop,
+        col_reward: colData.cReward,
+        col_reward_rank: colData.cRewardbyRank,
+        col_unstaking_fee_receiver: feeReceiver,
+        col_unstaking_fee: bodyData.cUnstakingFee,
+        col_unstaking_fee_share: feeShare,
+        col_tx_fee: bodyData.cTxFee,
+        col_enable: status
       }
     })
     if (retAction) {

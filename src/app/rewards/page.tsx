@@ -33,12 +33,12 @@ const page = () => {
         ClaimAmount: 0
       }
       const cycle = collections[i].cycle
-      const reward = parseInt(collections[i].reward.amount)
-      let stakedToken = tokens[`${collections[i].Caddress}/${collections[i].Ctitle}`].staked
-      stakedToken = stakedToken.filter((el: Token) => el.start_timestamp > el.end_timestamp)
+      const reward = parseInt(collections[i].cReward.amount)
+      let stakedToken = tokens[`${collections[i].Caddress}`].staked
+      stakedToken = stakedToken.filter((el: Token) => el.token_stake_time < el.token_end_time)
       for (let j = 0; j < stakedToken.length; j++) {
         const tk: Token = stakedToken[j]
-        let period = (new Date().getTime()) - parseInt(tk.start_timestamp.toString())/1000000
+        let period = (new Date().getTime()) - parseInt(tk.token_stake_time.toString())/1000000
         if (collections[i].auto_renewal) {
           indReward.ClaimAmount = indReward.ClaimAmount + reward * Math.floor(period / cycle)
         } else {
@@ -50,19 +50,21 @@ const page = () => {
     setTotalRewards(tempRewards)
   }
   const ClaimReward = async () => {
-    let resVal = await ActionHelper(collections[0].Saddress, {claimout_airdrop:{}});
-    if (resVal == true) {
-      toast('Claim Success !', {
-        hideProgressBar: true,
-        autoClose: 2000,
-        type: 'success'
-      });
-    } else {
-      toast('Claim failed !', {
-        hideProgressBar: true,
-        autoClose: 2000,
-        type: 'error'
-      });
+    for (let i =0; i<collections.length; i++ ) {
+      let resVal = await ActionHelper(collections[i].Saddress, {claim:{}});
+      if (resVal == true) {
+        toast('Claim Success !', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'success'
+        });
+      } else {
+        toast('Claim failed !', {
+          hideProgressBar: true,
+          autoClose: 2000,
+          type: 'error'
+        });
+      }
     }
   }
   const calcTotal = () => {
@@ -70,7 +72,7 @@ const page = () => {
     let total = 0
     for (let i = 0; i < keys.length; i++) {
       if (tokens[keys[i]].staked) {
-        total = total + tokens[keys[i]].staked.filter((el: Token) => parseInt(el.start_timestamp.toString())/1000000 > parseInt(el.end_timestamp.toString())).length
+        total = total + tokens[keys[i]].staked.filter((el: Token) => parseInt(el.token_stake_time.toString())/1000000 > parseInt(el.token_end_time.toString())).length
       }
       if (tokens[keys[i]].unstaked) {
         total = total + tokens[keys[i]].unstaked.length
@@ -84,7 +86,7 @@ const page = () => {
     for (let i = 0; i < keys.length; i++) {
       if (tokens[keys[i]].staked) {
         console.log('keys: ', tokens[keys[i]], tokens[keys[i]].staked)
-        total = total + tokens[keys[i]].staked.filter((el: Token) => parseInt(el.start_timestamp.toString())/1000000 > parseInt(el.end_timestamp.toString())).length
+        total = total + tokens[keys[i]].staked.filter((el: Token) => parseInt(el.token_stake_time.toString())/1000000 > parseInt(el.token_end_time.toString())).length
       }
     }
     setTotalStake(total)

@@ -8,12 +8,13 @@ import Button from "@/components/UI/Button";
 import { useEffect } from "react";
 const Rewards = ({ data, getReward }: { data: UserRewards, getReward: any }) => {
   const [totalEarning, setTotalEarning] = useState(0.0)
-  let total = 0.0
-  for(let i = 0;i<data.earnings.length; i++) {
-    total = total + data.earnings[i].ClaimAmount
+  const calcTotalEarning = () => {
+    for(let i = 0;i<data.earnings.length; i++) {
+      setTotalEarning(totalEarning + data.earnings[i].ClaimAmount)
+    }
   }
   useEffect(() => {
-    setTotalEarning(total)
+    calcTotalEarning()
   }, [])
   return (
     <div className="flex-center flex-wrap gap-3">

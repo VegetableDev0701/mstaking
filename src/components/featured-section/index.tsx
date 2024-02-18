@@ -26,15 +26,15 @@ const FeaturedSection = ({ heading, collections }: FeaturedSectionProps) => {
             >
               <div className="transition-transform hover:scale-105 transform-gpu">
                 <Image
-                  src={getBackgroundUrl(section.CBackground)}
-                  alt={section.Ctitle}
+                  src={getBackgroundUrl(section.cBkgimg)}
+                  alt={section.cTitle}
                   width={338}
                   height={272}
                   quality={100}
                 />
               </div>
               <p className="absolute bottom-0 left-0 text-white p-3 text-2xl font-medium leading-9 tracking-[-0.02em] text-left">
-                {section.Ctitle}
+                {section.cTitle}
               </p>
             </Link>
           );

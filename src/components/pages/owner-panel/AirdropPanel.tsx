@@ -99,7 +99,9 @@ const AirdropPanel = ({colData} : AirdropPanelInterface) => {
   }, []);
 
   const sendoutAirdrop = async () => {
-    let retVal = await TxActionHelper(colData.Saddress,{deposite_collection_airdrop: {}}, {amount: dailyAirdrop.toString(), denom: selectedToken.name});
+    let retVal = await TxActionHelper(colData.Saddress,
+      {deposite_collection_airdrop: {}}, 
+      {amount: dailyAirdrop.toString(), denom: selectedToken.name});
     console.log("airdrop", retVal)
   }
   return (

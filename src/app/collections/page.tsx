@@ -2,7 +2,7 @@
 import React from "react";
 import CollectionCard from "@/components/shared/CollectionCard";
 import CustomBreakLine from "@/components/UI/CustomBreakLine";
-import { IACollection } from '@/constants/collection'
+import { Collection } from "@/interface/collection";
 import { getCollections } from '@/lib/features/collectionSlice'
 import { useSelector, useDispatch } from "react-redux";
 import { useEffect } from "react";
@@ -23,8 +23,15 @@ const page = () => {
       </h2>
       <CustomBreakLine />
       <div className="flex flex-col gap-1">
-        {collections.map((collection: IACollection) => {
-          return <CollectionCard key={collection._id} {...collection} />;
+        {collections.map((collection: Collection) => {
+          return <CollectionCard key={collection._id}
+            _id={collection._id}
+            Caddress={collection.Caddress}
+            cTitle={collection.cTitle}
+            Saddress={collection.Saddress}
+            cDescription={collection.cDescription}
+            cBkgimg={collection.cBkgimg}
+          />;
         })}
       </div>
     </div>

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction, current } from '@reduxjs/toolkit'
-import { IACollection } from '@/constants/collection'
 import { Collection, InitCollection } from '@/interface/collection'
 import { persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
@@ -60,7 +59,7 @@ export const getUnstakeFee = (Caddress: string) => (state: any) => {
   const collections: Collection[] = state.collection.cols
   for(let i =0; i<collections.length; i++) {
     if (collections[i].Caddress == Caddress) {
-      return collections[i].unstake_fee
+      return collections[i].cUnstakingFee
     }
   }
   return {}
