@@ -34,9 +34,9 @@ const Page = () => {
         longTitle={selCollection?.Ctitle ? selCollection?.Ctitle : ''}
         description={selCollection?.Cdescription ? selCollection?.Cdescription : ''}
         staked={
-          selCollectionTokens && selCollectionTokens.staked ? selCollectionTokens.staked.filter((el: Token) => el.start_timestamp > el.end_timestamp).length.toString() : "0"
+          selCollectionTokens && selCollectionTokens.staked ? selCollectionTokens.staked.filter((el: Token) => el.start_timestamp/1000000 > el.end_timestamp).length.toString() : "0"
         }
-        total={selCollectionTokens ? (selCollectionTokens.staked.filter((el: Token) =>  el.start_timestamp > el.end_timestamp).length + selCollectionTokens.unstaked.length).toString() : "0"}
+        total={selCollectionTokens ? (selCollectionTokens.staked.filter((el: Token) =>  el.start_timestamp/1000000 > el.end_timestamp).length + selCollectionTokens.unstaked.length).toString() : "0"}
       />
       <CollectionTabs tokens={selCollectionTokens} selCollection={selCollection}/>
     </div>

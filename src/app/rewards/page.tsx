@@ -11,6 +11,8 @@ import { getTokens } from "@/lib/features/tokenSlice";
 import { Token } from "@/interface/token";
 import { CollectionReward } from '@/interface/Reward'
 import { setRoute } from "@/lib/features/routerSlice";
+import { ActionHelper } from "@/helper/actionHelper";
+import {toast} from 'react-toastify'
 const page = () => {
   const collections = useSelector(getCollections)
   const dispatch = useDispatch()
@@ -47,14 +49,28 @@ const page = () => {
     }
     setTotalRewards(tempRewards)
   }
-  const ClaimReward = () => {
+  const ClaimReward = async () => {
+    let resVal = await ActionHelper(collections[0].Saddress, {claimout_airdrop:{}});
+    if (resVal == true) {
+      toast('Claim Success !', {
+        hideProgressBar: true,
+        autoClose: 2000,
+        type: 'success'
+      });
+    } else {
+      toast('Claim failed !', {
+        hideProgressBar: true,
+        autoClose: 2000,
+        type: 'error'
+      });
+    }
   }
   const calcTotal = () => {
     let keys = Object.keys(tokens)
     let total = 0
     for (let i = 0; i < keys.length; i++) {
       if (tokens[keys[i]].staked) {
-        total = total + tokens[keys[i]].staked.filter((el: Token) => parseInt(el.start_timestamp.toString()) > parseInt(el.end_timestamp.toString())).length
+        total = total + tokens[keys[i]].staked.filter((el: Token) => parseInt(el.start_timestamp.toString())/1000000 > parseInt(el.end_timestamp.toString())).length
       }
       if (tokens[keys[i]].unstaked) {
         total = total + tokens[keys[i]].unstaked.length
@@ -68,7 +84,7 @@ const page = () => {
     for (let i = 0; i < keys.length; i++) {
       if (tokens[keys[i]].staked) {
         console.log('keys: ', tokens[keys[i]], tokens[keys[i]].staked)
-        total = total + tokens[keys[i]].staked.filter((el: Token) => parseInt(el.start_timestamp.toString()) > parseInt(el.end_timestamp.toString())).length
+        total = total + tokens[keys[i]].staked.filter((el: Token) => parseInt(el.start_timestamp.toString())/1000000 > parseInt(el.end_timestamp.toString())).length
       }
     }
     setTotalStake(total)

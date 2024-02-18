@@ -54,7 +54,7 @@ export const ActionHelper = async (
   funds: any = undefined) => {
   const sender = (await getAddresses())[0]
   try {
-    const network = getNetworkInfo(Network.TestnetK8s);
+    const network = getNetworkInfo(Network.TestnetSentry);
     const chainId = CHAIN_ID; /* ChainId.Mainnet */
     const { key } = await getKeplr(chainId);
     const pubKey = Buffer.from(key.pubKey).toString("base64");
@@ -74,15 +74,101 @@ export const ActionHelper = async (
       sender
     );
     const baseAccount = BaseAccount.fromRestApi(accountDetailsResponse);
+    debugger;
     const accountDetails = baseAccount.toAccountDetails();
 
     /** Block Details */
     const chainRestTendermintApi = new ChainRestTendermintApi(restEndpoint);
     const latestBlock = await chainRestTendermintApi.fetchLatestBlock();
     const latestHeight = latestBlock.header.height;
+    console.log(latestHeight)
     const timeoutHeight = new BigNumberInBase(latestHeight).plus(
-      DEFAULT_BLOCK_TIMEOUT_HEIGHT
+      DEFAULT_BLOCK_TIMEOUT_HEIGHT * 100
     );
+    console.log(timeoutHeight.toNumber())
+
+    /** Prepare the Transaction **/
+    let { txRaw, signDoc } = createTransaction({
+      pubKey,
+      chainId,
+      fee: DEFAULT_STD_FEE,
+      message: msgs,
+      sequence: baseAccount.sequence,
+      timeoutHeight: timeoutHeight.toNumber(),
+      accountNumber: baseAccount.accountNumber,
+    });
+    const { offlineSigner } = await getKeplr(chainId)
+    const directSignResponse = await offlineSigner.signDirect(
+      injectiveAddress,
+      signDoc
+    );
+    txRaw = getTxRawFromTxRawOrDirectSignResponse(directSignResponse);
+
+    const txService = new TxGrpcClient(network.grpc);
+    const simulationResponse = await txService.simulate(txRaw);
+    console.log(
+      `Transaction simulation response: ${JSON.stringify(
+        simulationResponse.gasInfo
+      )}`
+    );
+
+    /** Broadcast transaction */
+    const response = await txService.broadcast(txRaw);
+    
+    if (response.code == 0) {
+      console.log('Execute success.');
+      return true
+    }
+    else {
+      console.error('Something went wrong.');
+      return false
+    }
+  } catch (e) {
+    console.error(e);
+    return false
+  }
+}
+
+export const TxActionHelper = async (
+  contractAddress: string,
+  executeMsg: any,
+  fee: any,
+  funds: any = undefined) => {
+  const sender = (await getAddresses())[0]
+  debugger;
+  try {
+    const network = getNetworkInfo(Network.TestnetSentry);
+    const chainId = CHAIN_ID; /* ChainId.Mainnet */
+    const { key } = await getKeplr(chainId);
+    const pubKey = Buffer.from(key.pubKey).toString("base64");
+    const injectiveAddress = key.bech32Address;
+    const restEndpoint = getNetworkEndpoints(Network.TestnetSentry).rest
+    // const restEndpoint = "https://testnet.sentry.tm.injective.network/"
+    const msg = MsgExecuteContractCompat.fromJSON({
+      contractAddress,
+      sender: sender,
+      msg: executeMsg,
+      funds: fee
+    });
+
+    const msgs = Array.isArray(msg) ? msg : [msg];
+    /** Account Details **/
+    const chainRestAuthApi = new ChainRestAuthApi(restEndpoint);
+    const accountDetailsResponse = await chainRestAuthApi.fetchAccount(
+      sender
+    );
+    const baseAccount = BaseAccount.fromRestApi(accountDetailsResponse);
+    const accountDetails = baseAccount.toAccountDetails();
+
+    /** Block Details */
+    const chainRestTendermintApi = new ChainRestTendermintApi(restEndpoint);
+    const latestBlock = await chainRestTendermintApi.fetchLatestBlock();
+    const latestHeight = latestBlock.header.height;
+    console.log(latestHeight)
+    const timeoutHeight = new BigNumberInBase(latestHeight).plus(
+      DEFAULT_BLOCK_TIMEOUT_HEIGHT * 10
+    );
+    console.log(timeoutHeight)
 
     /** Prepare the Transaction **/
     let { txRaw, signDoc } = createTransaction({

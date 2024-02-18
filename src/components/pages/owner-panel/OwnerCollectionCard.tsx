@@ -92,7 +92,7 @@ const OwnerCollectionCard = ({ colData, iNumber }: OwnerCollectionProps) => {
               </div>
               <div>
                 {activeTab === "collections" && <OwnerCollectionCardContent colData={colData} setDropdown={setIsDropdownOpen} />}
-                {activeTab === "airdrop" && <AirdropPanel />}
+                {activeTab === "airdrop" && <AirdropPanel colData={colData}/>}
               </div>
             </div>
           </motion.div>

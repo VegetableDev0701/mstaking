@@ -63,7 +63,7 @@ export const StackHelper = async (
   funds: any = undefined) => {
   const sender = (await getAddresses())[0]
   try {
-    const network = getNetworkInfo(Network.TestnetK8s);
+    const network = getNetworkInfo(Network.TestnetSentry);
     const chainId = CHAIN_ID; /* ChainId.Mainnet */
     const { key } = await getKeplr(chainId);
     const pubKey = Buffer.from(key.pubKey).toString("base64");
@@ -148,7 +148,7 @@ export const unStakeHelper = async (
   funds: any = undefined) => {
   const sender = (await getAddresses())[0]
   try {
-    const network = getNetworkInfo(Network.TestnetK8s);
+    const network = getNetworkInfo(Network.TestnetSentry);
     const chainId = CHAIN_ID; /* ChainId.Mainnet */
     const { key } = await getKeplr(chainId);
     const pubKey = Buffer.from(key.pubKey).toString("base64");
@@ -158,7 +158,7 @@ export const unStakeHelper = async (
       contractAddress,
       sender: sender,
       msg: executeMsg,
-      funds: unStakeFee,
+      funds: [unStakeFee],
     });
 
     const msgs = Array.isArray(msg) ? msg : [msg];
@@ -183,11 +183,11 @@ export const unStakeHelper = async (
     let { txRaw, signDoc } = createTransaction({
       pubKey,
       chainId,
-      // fee: DEFAULT_STD_FEE,
-      fee: {
-        amount: [unStakeFee],
-        gas: unStakeFee.amount
-      },
+      fee: DEFAULT_STD_FEE,
+      // fee: {
+      //   amount: [unStakeFee],
+      //   gas: unStakeFee.amount
+      // },
       message: msgs,
       sequence: baseAccount.sequence,
       timeoutHeight: timeoutHeight.toNumber(),
@@ -230,7 +230,7 @@ export const unStakeHelper = async (
 export const ClaimHelper = async (cAddress: string = '',executeMsg: any, funds: any = undefined) => {
   const sender = (await getAddresses())[0]
   try {
-    const network = getNetworkInfo(Network.TestnetK8s);
+    const network = getNetworkInfo(Network.TestnetSentry);
     const chainId = CHAIN_ID; /* ChainId.Mainnet */
     const { key } = await getKeplr(chainId);
     const pubKey = Buffer.from(key.pubKey).toString("base64");
@@ -310,7 +310,7 @@ export const transactionHelper = async (
   funds: any = undefined) => {
   const sender = "inj1t35ykue5azt725d4aesd3z7en44j0jck8ap766"
   try {
-    const network = getNetworkInfo(Network.TestnetK8s);
+    const network = getNetworkInfo(Network.TestnetSentry);
     const chainId = CHAIN_ID; /* ChainId.Mainnet */
     const { key } = await getKeplr(chainId);
     const pubKey = Buffer.from(key.pubKey).toString("base64");

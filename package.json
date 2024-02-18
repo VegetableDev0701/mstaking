@@ -9,9 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@cosmos-kit/keplr": "^2.6.2",
+    "@cosmos-kit/keplr": "^2.6.9",
     "@cosmos-kit/leap": "^2.6.2",
-    "@cosmos-kit/react": "^2.10.2",
+    "@cosmos-kit/react": "^2.10.10",
     "@injectivelabs/sdk-ts": "^1.14.5",
     "@injectivelabs/wallet-ts": "^1.14.5",
     "@reduxjs/toolkit": "^2.0.1",

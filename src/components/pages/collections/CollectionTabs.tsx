@@ -70,7 +70,12 @@ const CollectionTabs = ({ tokens, selCollection }: { tokens: CollectionToken, se
 
   const unStackNFT = async (token: Token, index: number) => {
     let fee = selCollection.unstake_fee
-    if ( (new Date().getTime()) - token.start_timestamp < selCollection .unstake_lock_period ) {
+    if ( parseInt(selCollection.unstake_fee.amount) > 0 && selCollection.unstake_lock_period != 0 && (new Date().getTime() - token.end_timestamp) < selCollection.unstake_lock_period) {
+      fee = selCollection.unstake_fee
+    } else {
+      fee = selCollection.tx_fee
+    }
+    if ( ((new Date().getTime()) - token.start_timestamp/1000000) < selCollection .unstake_lock_period ) {
       fee = DEFAULT_STD_FEE .amount
     }
     let ret = await unStakeHelper(
@@ -127,7 +132,7 @@ const CollectionTabs = ({ tokens, selCollection }: { tokens: CollectionToken, se
             <>
             {
               tokens.staked.map((nft: Token, ind) => (
-                nft.start_timestamp > nft.end_timestamp && <NFTCard
+                nft.start_timestamp/1000000 > nft.end_timestamp && <NFTCard
                   key={nft.token_id}
                   tId={nft.token_id}
                   address={nft.token_address}

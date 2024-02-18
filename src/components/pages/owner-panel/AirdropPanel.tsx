@@ -4,8 +4,14 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import InfoCard from "@/components/UI/InfoCard";
 import Button from "@/components/UI/Button";
-
-const AirdropPanel = () => {
+import { TxActionHelper } from "@/helper/actionHelper";
+import { useDispatch } from "react-redux";
+import { Collection } from "@/interface/collection";
+interface AirdropPanelInterface {
+  colData: Collection
+}
+const AirdropPanel = ({colData} : AirdropPanelInterface) => {
+  const dispathc= useDispatch();
   const DUMMY_TOKENS = [
     {
       id: 1,
@@ -43,6 +49,12 @@ const AirdropPanel = () => {
       image: "/assets/sample-nft.png",
       price: 5,
     },
+    {
+      id: 7,
+      name: "INJ",
+      image: "/assets/sample-nft.png",
+      price: 5,
+    }
   ];
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -51,11 +63,11 @@ const AirdropPanel = () => {
   const [filteredTokens, setFilteredTokens] = useState([] as any);
   const [selectedToken, setSelectedToken] = useState({
     id: 1,
-    name: "INJ",
+    name: "inj",
     image: "/assets/sample-nft.png",
     price: 5,
   });
-
+  const [daysAirdrop, setDaysAirdrop] = useState(0);
   const [dailyAirdrop, setDailyAirdrop] = useState(0);
 
   const dropdownRef = useRef(null);
@@ -86,6 +98,10 @@ const AirdropPanel = () => {
     };
   }, []);
 
+  const sendoutAirdrop = async () => {
+    let retVal = await TxActionHelper(colData.Saddress,{deposite_collection_airdrop: {}}, {amount: dailyAirdrop.toString(), denom: selectedToken.name});
+    console.log("airdrop", retVal)
+  }
   return (
     <>
       <div
@@ -103,7 +119,7 @@ const AirdropPanel = () => {
               type="number"
               className="p-2 rounded-md bg-[#121212] text-dark-100 text-base font-normal leading-4 tracking-[-0.01em] text-center max-w-[45px]"
               placeholder="0"
-              onChange={(e) => setDailyAirdrop(+e.target.value)}
+              onChange={(e) => setDaysAirdrop(+e.target.value)}
             />
             <span className="text-base font-bold leading-4 tracking-[-0.01em] text-left">
               Days
@@ -188,7 +204,7 @@ const AirdropPanel = () => {
           </div>
           <Button
             className="px-3 py-[18px] rounded-lg bg-primary text-base font-medium leading-4 tracking-[-0.01em] text-center text-dark-100 w-[29%] max-md:w-full h-full"
-            onClick={() => { }}
+            onClick={() => { sendoutAirdrop()}}
           >
             Send
           </Button>
