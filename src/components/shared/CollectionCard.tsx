@@ -2,8 +2,8 @@ import React from "react";
 import { Collection } from "@/types";
 import Image from "next/image";
 import Link from "next/link";
-import { IACollection } from '@/constants/collection'
-import { DEFAULT_COLLECTION_IMG } from '@/constants'
+import { IACollection } from "@/constants/collection";
+import { DEFAULT_COLLECTION_IMG } from "@/constants";
 
 const CollectionCard = ({
   _id,
@@ -20,11 +20,15 @@ const CollectionCard = ({
     >
       <div className="flex-start gap-4">
         <span className="text-sm font-medium leading-4 tracking-[-0.01em] text-left text-dark-200">
-          {''}
+          {""}
         </span>
         <div className="flex-start gap-2 w-full">
           <Image
-            src={CBackground == "default" ? DEFAULT_COLLECTION_IMG : `${process.env.API_SERVER}/images/${CBackground}`}
+            src={
+              CBackground == "default"
+                ? DEFAULT_COLLECTION_IMG
+                : `${process.env.API_SERVER}/images/${CBackground}`
+            }
             alt={Cdescription}
             width={72}
             height={72}
@@ -46,7 +50,7 @@ const CollectionCard = ({
                 )}
               </div>
               <p className="text-base font-semibold leading-4 tracking-[-0.01em] text-left text-white">
-{/*                 {stakedNfts ? stakedNfts?.length : 0}{" "}
+                {/*                 {stakedNfts ? stakedNfts?.length : 0}{" "}
                 <span className="text-sm font-medium leading-4 tracking-[-0.01em] text-dark-200">
                   Staked
                 </span> */}
