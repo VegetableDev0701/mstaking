@@ -2,27 +2,35 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Button from "../UI/Button";
-import { NFT } from "@/types";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
+import { getCollectionData } from "@/lib/features/collectionSlice";
+import { Collection } from "@/interface/collection";
+import { Token } from "@/interface/token";
+import { MS2PeriodS } from "@/helper/utils";
+import { useEffect } from "react";
 interface NFTCardProps {
   // nft: NFT;
-  tId: string;
+  tData: Token;
   address: string;
+  lockPeriod?: string;
   onClick: () => void;
-  onSelect: () => void;
-  onUnSelect: () => void;
+  onSelect: (idx: string) => void;
+  onUnSelect: (idx: string) => void;
   status: "passive" | "staked" | "active";
 }
 
 const NFTCard = ({
-  // nft: { id, name, price, imageUrl },
   address,
-  tId,
+  tData,
   onClick,
   onSelect,
   onUnSelect,
   status,
+  lockPeriod,
 }: NFTCardProps) => {
+  const colData: Collection = useSelector(getCollectionData(address));
+  const [thisTime, setThisTime] = useState<Date>(new Date())
   let bgColor;
   switch (status) {
     case "staked":
@@ -34,9 +42,31 @@ const NFTCard = ({
     default:
       bgColor = "!bg-green";
   }
-
+  const getNFTTitle = () => {
+    if (colData.cModel) {
+      if ((tData.token_lock_time/1000000) > new Date().getTime()) {
+        return MS2PeriodS((tData.token_lock_time/1000000 - (thisTime.getTime()))/1000)
+        // return new Date(tData.token_stake_time/1000000 + colData.cLockDur).toLocaleTimeString()
+      } else {
+        return 'Unstake Free'
+      }
+    } else {
+      if (tData.token_lock_time == 0 ) {
+        return 'Unstake'
+      } else if (tData.token_lock_time/1000000 > new Date().getTime()) {
+        return MS2PeriodS((tData.token_lock_time/1000000 - (thisTime.getTime()))/1000)
+      } else {
+        return 'Unstake Free'
+      }
+    }
+  }
+  useEffect(() => {
+    var interval = setInterval(() => setThisTime(new Date()), 1000);
+    return ()=> {
+        clearInterval(interval);
+    };
+}, []);
   const [selected, setSelected] = useState(false);
-
   return (
     <div
       className={`p-3 rounded-lg bg-dark-600 flex flex-col gap-2.5 relative transition-all ${
@@ -48,12 +78,12 @@ const NFTCard = ({
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         onClick={() => {
-          setSelected(!selected);
           if (selected) {
-            onSelect();
+            onUnSelect(tData.token_id);
           } else {
-            onUnSelect();
+            onSelect(tData.token_id);
           }
+          setSelected(!selected);
         }}
       >
         {selected && (
@@ -63,15 +93,15 @@ const NFTCard = ({
         )}
       </motion.div>
       <Image
-        src={`${process.env.API_SERVER}/image?tId=${tId}&addr=${address}`}
-        alt={tId}
+        src={`${process.env.API_SERVER}/image?tId=${tData.token_id}&addr=${address}`}
+        alt={tData.token_id}
         width={216}
         height={216}
         quality={100}
       />
       <div className="text-lg font-medium leading-[27px] tracking-[-0.02em] flex-between">
         <h4>
-          {} #{tId}
+          {} #{tData.token_id}
         </h4>
         <h4>XX INJ</h4>
       </div>
@@ -83,7 +113,7 @@ const NFTCard = ({
         {status === "passive" ? (
           <span>Passive</span>
         ) : status === "staked" ? (
-          <span>Unstake</span>
+          <span>{getNFTTitle()}</span>
         ) : (
           <span>Stake</span>
         )}

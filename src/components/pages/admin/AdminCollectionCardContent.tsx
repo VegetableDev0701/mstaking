@@ -6,11 +6,13 @@ import Image from "next/image";
 import { Collection } from "@/interface/collection";
 import { MS2Period } from "@/helper/utils";
 import { useDispatch } from "react-redux";
-import { DEFAULT_COLLECTION_IMG } from "@/constants";
+import { queryHelper } from "@/helper/queryHelper";
+import { getSMNFT } from "@/helper/queryHelper"
 import { toast } from "react-toastify";
 import { setCollectionData } from "@/lib/features/collectionSlice";
 import { ActionHelper } from "@/helper/actionHelper";
 import { useRouter } from 'next/navigation'
+import { downloadFile } from "@/helper/utils";
 const AdminCollectionCardContent = ({
   setDropdown, colData
 }: {
@@ -180,6 +182,59 @@ const AdminCollectionCardContent = ({
   const sendoutNAirdrop = async () => {
 
   }
+  const downloadNFT = async () => {
+    let headers = ['address', 'token_id', 'staked']
+    let data: string[] = []
+    let stakedUsers = await queryHelper(colData.Saddress, "get_staking_users", {});
+    if (stakedUsers) {
+      for(let i =0; i<stakedUsers?.length; i++) {
+        if (stakedUsers && stakedUsers[i]) {
+          let smNFT = await getSMNFT(colData.Saddress, stakedUsers[i]);
+          if (smNFT) {
+            for(let j =0;j<smNFT.length; j++) {
+              if (smNFT[j].token_end_time > 0) continue;
+              let indx = data.findIndex(el => el.includes(`${colData.Saddress},${smNFT[j].token_id}`));
+              if (indx == -1) {
+                data.push(`${colData.Saddress},${smNFT[j].token_id},${new Date(smNFT[j].token_stake_time/1000000).toLocaleString()}`)
+              }
+            }
+          }
+        }
+      }
+    }
+    downloadFile({
+      data: [headers.join(','), ...data].join('\n'),
+      fileName: 'staked.csv',
+      fileType: 'text/csv',
+    })
+  }
+  const downloadNoneLocked = async () => {
+    let headers = ['address', 'token_id', 'staked']
+    let data: string[] = []
+    let stakedUsers = await queryHelper(colData.Saddress, "get_staking_users", {});
+    if (stakedUsers) {
+      for(let i =0; i<stakedUsers?.length; i++) {
+        if (stakedUsers && stakedUsers[i]) {
+          let smNFT = await getSMNFT(colData.Saddress, stakedUsers[i]);
+          if (smNFT) {
+            for(let j =0;j<smNFT.length; j++) {
+              if (smNFT[j].token_lock_time = 0) continue;
+              if ( smNFT[j].token_lock_time/1000000 > (new Date().getTime())) continue;
+              let indx = data.findIndex(el => el.includes(`${colData.Saddress},${smNFT[j].token_id}`));
+              if (indx == -1) {
+                data.push(`${colData.Saddress},${smNFT[j].token_id},${new Date(smNFT[j].token_stake_time/1000000).toLocaleString()}`)
+              }
+            }
+          }
+        }
+      }
+    }
+    downloadFile({
+      data: [headers.join(','), ...data].join('\n'),
+      fileName: 'lockednft.csv',
+      fileType: 'text/csv',
+    })
+  }
   return (
     <div className="flex flex-col gap-2.5">
       <InfoCard title="Collection Title">
@@ -221,7 +276,6 @@ const AdminCollectionCardContent = ({
       <InfoCard title="Change lock duration">
         <input
           type="number"
-
           value={lockDur}
           className="p-2 rounded-md bg-[#121212] text-dark-100 text-base font-normal leading-4 tracking-[-0.01em] text-center"
           placeholder="Enter Duration"
@@ -240,7 +294,7 @@ const AdminCollectionCardContent = ({
             return (
               <div
                 key={index}
-                className={`px-2.5 py-1.5 rounded-[40px] text-base font-normal leading-4 tracking-[-0.01em] text-left text-dark-100 cursor-pointer transition-all ${stakingType === index + 1 && "bg-dark-800"
+                className={`px-2.5 py-1.5 rounded-[40px] text-base font-normal leading-4 tracking-[-0.01em] text-left text-dark-100 cursor-pointer transition-all ${stakingType == (index == 0) && "bg-dark-800"
                   }`}
                 onClick={() => setStakingType(!stakingType)}
               >
@@ -336,6 +390,7 @@ const AdminCollectionCardContent = ({
           height={24}
           alt="download-icon"
           className="cursor-pointer"
+          onClick={() => downloadNFT()}
         />
       </InfoCard>
       <InfoCard title="Download snapshot of all current non-locked and staked NFTs & addresses">
@@ -345,6 +400,7 @@ const AdminCollectionCardContent = ({
           height={24}
           alt="download-icon"
           className="cursor-pointer"
+          onClick={() => downloadNoneLocked()}
         />
       </InfoCard>
       <div className="flex-start w-full">

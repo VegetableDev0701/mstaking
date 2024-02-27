@@ -35,12 +35,12 @@ export const tokenSlice = createSlice({
         state.tokens[keyname].unstaked = tokens.unstaked
       }
     },
-    setTokenStaked: (state, action: PayloadAction<{ collectionKey: string, tokenId: string[]}>) => {
-      const { tokenId, collectionKey } = action.payload
+    setTokenStaked: (state, action: PayloadAction<{ collectionKey: string, tokenId: string[], cLock: number}>) => {
+      debugger;
+      const { tokenId, collectionKey, cLock } = action.payload
       // Remove element from unstaked array
       let unstaked: Token[] = state.tokens[action.payload.collectionKey].unstaked
-
-      state.tokens[collectionKey].unstaked = unstaked.filter((el:Token) => tokenId.findIndex(iEle => iEle == el.token_id ) != -1 )
+      state.tokens[collectionKey].unstaked = unstaked.filter((el:Token) => tokenId.findIndex(iEle => iEle == el.token_id ) == -1 )
       // Add element to staked arry
       const token_address = collectionKey
       for (let i =0; i<tokenId.length; i++) {
@@ -48,6 +48,7 @@ export const tokenSlice = createSlice({
           token_id: tokenId[i],
           token_stake_time: new Date().getTime() * 1000000,
           token_end_time: 0,
+          token_lock_time: cLock,
           token_reward: {
             amount: "",
             denom: "inj"
@@ -55,14 +56,14 @@ export const tokenSlice = createSlice({
         })
       }
     },
-    setTokenLocked: (state, action: PayloadAction<{collectionKey: string, tokenId: string[]}>) => {
-      const { tokenId, collectionKey } = action.payload
+    setTokenLocked: (state, action: PayloadAction<{collectionKey: string, tokenId: string[], cLock: number}>) => {
+      const { tokenId, collectionKey, cLock } = action.payload
       let staked: Token[] = state.tokens[collectionKey].staked
       state.tokens[collectionKey].staked = staked.map((el: Token) => {
         if (tokenId.findIndex(eI => eI == el.token_id) != -1) {
           return {
             ...el,
-            token_end_time: (new Date().getTime()) * 1000000
+            token_lock_time: cLock
           }
         } else {
           return {
@@ -77,7 +78,7 @@ export const tokenSlice = createSlice({
       // set element unstaked from staked array
       let staked: Token[] = state.tokens[collectionKey].staked
       state.tokens[collectionKey].staked = staked.filter((el: Token) => {
-        if (tokenId.findIndex((eI) => eI == el.token_id) != -1) {
+        if (tokenId.findIndex((eI) => eI == el.token_id) == -1) {
           return true
         } else {
           return false
@@ -87,6 +88,7 @@ export const tokenSlice = createSlice({
       for (let i = 0;i<tokenId.length; i++) {
         state.tokens[collectionKey].unstaked.push({
           token_id: tokenId[i],
+          token_lock_time: 0,
           token_stake_time: 0,
           token_end_time: 0,
           token_reward: {

@@ -26,11 +26,11 @@ const CollectionCard = ({
     >
       <div className="flex-start gap-4">
         <span className="text-sm font-medium leading-4 tracking-[-0.01em] text-left text-dark-200">
-          {""}
+          {''}
         </span>
         <div className="flex-start gap-2 w-full">
           <Image
-            src={cBkgimg == "default" ? DEFAULT_COLLECTION_IMG : `${process.env.API_SERVER}/images/${cBkgimg}`}
+            src={cBkgimg == "default" ? DEFAULT_COLLECTION_IMG : `${process.env.API_SERVER}/image/${cBkgimg}`}
             alt={cDescription}
             width={72}
             height={72}
@@ -52,7 +52,7 @@ const CollectionCard = ({
                 )}
               </div>
               <p className="text-base font-semibold leading-4 tracking-[-0.01em] text-left text-white">
-                {/*                 {stakedNfts ? stakedNfts?.length : 0}{" "}
+{/*                 {stakedNfts ? stakedNfts?.length : 0}{" "}
                 <span className="text-sm font-medium leading-4 tracking-[-0.01em] text-dark-200">
                   Staked
                 </span> */}

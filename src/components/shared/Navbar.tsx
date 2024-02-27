@@ -46,7 +46,7 @@ const Navbar = () => {
         >
           Add collection
         </Button>}
-        { (selCollection.admin == myAddr && curRoute == 'COLLECTION') && <Button onClick={() => {
+        { (selCollection.cAdmin == myAddr && curRoute == 'COLLECTION') && <Button onClick={() => {
           router.push(`/admin/${selCollection.Caddress}`)
         }}>Edit Collection</Button>}
         <WalletConnectButton />

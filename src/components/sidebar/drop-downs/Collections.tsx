@@ -75,7 +75,7 @@ const CollectionsDropDown = () => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="w-full mt-2 bg-transparent rounded-lg overflow-y-scroll no-scrollbar"
+            className="absolute left-0 w-full mt-2 bg-transparent rounded-lg max-h-[70%] overflow-y-scroll no-scrollbar"
             initial="closed"
             animate="open"
             exit="closed"
@@ -84,12 +84,12 @@ const CollectionsDropDown = () => {
           >
             <div className="flex flex-col gap-3">
               <InsiderDropDowns
-                collections={collections.filter((el: any) => tokens && tokens[`${el.Caddress}/${el.Ctitle}`] && tokens[`${el.Caddress}/${el.Ctitle}`].staked.filter((el: Token) => el.start_timestamp >el.end_timestamp).length != 0)}
+                collections={collections.filter((el: any) => tokens && tokens[`${el.Caddress}`] && tokens[`${el.Caddress}`].staked.filter((el: Token) => el.token_stake_time >el.token_end_time).length != 0)}
                 header="Staked"
                 initialOpen={true}
               />
               <InsiderDropDowns
-                collections={collections.filter((el: any) =>  tokens && tokens[`${el.Caddress}/${el.Ctitle}`] && tokens[`${el.Caddress}/${el.Ctitle}`].staked.filter((el: Token) => el.start_timestamp >el.end_timestamp).length == 0)}
+                collections={collections.filter((el: any) =>  tokens && tokens[`${el.Caddress}`] && tokens[`${el.Caddress}`].staked.filter((el: Token) => el.token_stake_time >el.token_end_time).length == 0)}
                 header="Available"
                 initialOpen={false}
               />

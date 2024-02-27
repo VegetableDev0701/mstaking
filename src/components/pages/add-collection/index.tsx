@@ -5,13 +5,13 @@ import CustomInput from "./CustomInput";
 import CustomCheckBox from "./CustomCheckBox";
 import Button from "@/components/UI/Button";
 import { Notify } from "@/helper/notification";
-import { getAddresses } from "@/services/wallet";
-import { IACollectionR } from "@/constants/collection";
+import { getAddresses } from '@/services/wallet' 
+import { IACollectionR } from '@/constants/collection'
 
 const AddCollection = () => {
-  const [collectionAddr, setCollectionAddr] = useState<string>("");
-  const [collectionTitle, setCollectionTitle] = useState<string>("");
-  const [collectionDes, setCollectionDes] = useState<string>("");
+  const [collectionAddr, setCollectionAddr] = useState<string>("")
+  const [collectionTitle, setCollectionTitle] = useState<string>("")
+  const [collectionDes, setCollectionDes] = useState<string>("")
   const [stakingDuration, setStakingDuration] = useState<number>(0);
   const [disableRestart, setDisableRestart] = useState<boolean>(true);
   const [enableAirdrop, setEnableAirdrop] = useState<boolean>(false);
@@ -21,19 +21,19 @@ const AddCollection = () => {
 
   const [receiverAddress, setReceiverAddress] = useState<string>("");
   const [stakingFee, setStakingFee] = useState<number>(0);
-  const [stakingStatus, setStakingStatus] = useState<string>("");
+  const [stakingStatus, setStakingStatus] = useState<string>("")
 
   const submitCollection = async () => {
-    let myAddr = await getAddresses();
-    if (myAddr.length == 0) {
-      return Notify("error", "No Wallet Connected");
+    let myAddr = await getAddresses()
+    if ( myAddr.length == 0 ) {
+      return Notify('error', 'No Wallet Connected');
     }
     const bodyData: IACollectionR = {
       Caddress: collectionAddr,
       Cwaddress: myAddr[0],
       Ctitle: collectionTitle,
       Cdescription: collectionDes,
-      CBackground: "",
+      CBackground: '',
       CstakingDuration: stakingDuration,
       CdisableRestart: disableRestart,
       CenableAirdrop: enableAirdrop,
@@ -41,13 +41,10 @@ const AddCollection = () => {
       CdisableNFT: disableNFT,
       CreceiverAddress: receiverAddress,
       CstakingFee: stakingFee,
-      CstakingStatus: stakingStatus,
-    };
-    const res = await fetch("/api/collection/addCollection", {
-      method: "POST",
-      body: JSON.stringify(bodyData),
-    });
-  };
+      CstakingStatus: stakingStatus
+    }
+    const res = await fetch('/api/collection/addCollection', {method: 'POST', body: JSON.stringify(bodyData)})
+  }
 
   return (
     <div className="flex flex-col gap-8">
@@ -161,41 +158,23 @@ const AddCollection = () => {
       </div>
       <div className="flex flex-col w-full gap-2.5">
         <div className="flex-start gap-2.5 w-full">
-          <Button
-            onClick={() => {
-              setStakingStatus("Start");
-            }}
-            className="w-full"
-          >
+          <Button onClick={() => { setStakingStatus('Start') }} className="w-full">
             Start Staking
           </Button>
-          <Button onClick={() => {}} className="w-full">
+          <Button onClick={() => { }} className="w-full">
             Snapshot of staked NFTs and addresses
           </Button>
         </div>
         <div className="flex-start gap-2.5">
-          <Button
-            onClick={() => {
-              setStakingStatus("Restart");
-            }}
-            className="bg-secondary w-full"
-          >
+          <Button onClick={() => { setStakingStatus('Restart') }} className="bg-secondary w-full">
             Restart Staking
           </Button>
-          <Button
-            onClick={() => {
-              setStakingStatus("Disable");
-            }}
-            className="bg-secondary w-full"
-          >
+          <Button onClick={() => { setStakingStatus('Disable') }} className="bg-secondary w-full">
             Disable Staking
           </Button>
         </div>
         <div className="flex-start w-full">
-          <Button
-            onClick={() => submitCollection()}
-            className="bg-primary w-full"
-          >
+          <Button onClick={() => submitCollection()} className="bg-primary w-full">
             Submit Collection
           </Button>
         </div>

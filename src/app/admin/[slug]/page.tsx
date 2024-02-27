@@ -15,9 +15,9 @@ const Page = () => {
   const { slug: Caddress } = useParams();
   const dispatch = useDispatch()
   const colData: Collection = useSelector(getSelectedCollection)
-  const [CBackground ,setCBackground] = useState<string>(colData.CBackground)
+  const [CBackground ,setCBackground] = useState<string>(colData.cBkgimg)
   const myAddr = useSelector(getAddress)
-  return myAddr === colData.admin ? (
+  return myAddr === colData.cAdmin ? (
     <div>
       <div className="relative p-3 h-[272px]">
         <Image

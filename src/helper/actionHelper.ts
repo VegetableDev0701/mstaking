@@ -74,7 +74,6 @@ export const ActionHelper = async (
       sender
     );
     const baseAccount = BaseAccount.fromRestApi(accountDetailsResponse);
-    debugger;
     const accountDetails = baseAccount.toAccountDetails();
 
     /** Block Details */
@@ -135,7 +134,6 @@ export const TxActionHelper = async (
   fee: any,
   funds: any = undefined) => {
   const sender = (await getAddresses())[0]
-  debugger;
   try {
     const network = getNetworkInfo(Network.TestnetSentry);
     const chainId = CHAIN_ID; /* ChainId.Mainnet */

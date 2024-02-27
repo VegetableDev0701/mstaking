@@ -27,7 +27,7 @@ const OwnerCollectionCard = ({ colData, iNumber }: OwnerCollectionProps) => {
           </span>
           <div className="flex items-center justify-start gap-2 w-full">
             <Image
-              src={getBackgroundUrl(colData.CBackground)}
+              src={getBackgroundUrl(colData.cBkgimg)}
               alt="collection-banner"
               width={44}
               height={44}
@@ -35,7 +35,7 @@ const OwnerCollectionCard = ({ colData, iNumber }: OwnerCollectionProps) => {
             />
             <div className="flex items-center justify-start gap-1">
               <h3 className="text-xl font-bold leading-[19px] tracking-normal text-left">
-                {colData.Ctitle}
+                {colData.cTitle}
               </h3>
               <Image
                 src="/icons/verified.svg"

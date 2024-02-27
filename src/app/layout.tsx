@@ -5,9 +5,9 @@ import "@/styles/globals.css";
 import CosmosApp from "@/context/WalletProvider";
 import Navbar from "@/components/shared/Navbar";
 import Sidebar from "@/components/sidebar";
-import StoreProvider from "./storeProvider";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import StoreProvider from './storeProvider'
+import {ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const poppins = Poppins({
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
   subsets: ["latin"],
@@ -40,7 +40,7 @@ export default function RootLayout({
                 <Sidebar />
               </div>
               <div className="pl-[358px] pt-[88px] h-full w-full">
-                <div className="pt-6 pb-0 px-6 min-h-[calc(100vh_-_88px)] w-full overflow-y-scroll no-scrollbar">
+                <div className="pt-6 pb-0 px-6 h-full w-full overflow-y-scroll no-scrollbar mb-10">
                   {children}
                 </div>
               </div>
@@ -48,6 +48,7 @@ export default function RootLayout({
             </main>
           </CosmosApp>
         </StoreProvider>
+        
       </body>
     </html>
   );

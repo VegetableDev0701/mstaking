@@ -3,7 +3,6 @@ import React from "react";
 import { useParams } from "next/navigation";
 import CollectionBanner from "@/components/pages/collections/CollectionBanner";
 import CollectionTabs from "@/components/pages/collections/CollectionTabs";
-
 import { getCollectionData, setSelectedCollection } from '@/lib/features/collectionSlice'
 import { getCollectionTokens } from '@/lib/features/tokenSlice'
 import { setRoute } from "@/lib/features/routerSlice";
@@ -18,6 +17,7 @@ const Page = () => {
   const dispatch = useDispatch()
   const selCollection: Collection = useSelector(getCollectionData(Caddress))
   const selCollectionTokens: CollectionToken = useSelector(getCollectionTokens(`${Caddress}`))
+  console.log('collection Tokens: ', selCollectionTokens)
   const setSelCollection = async () => {
     dispatch(setSelectedCollection({Caddress}))
     dispatch(setRoute({routeStr:'COLLECTION'}))
@@ -33,10 +33,11 @@ const Page = () => {
         longTitle={selCollection?.cTitle ? selCollection?.cTitle : ''}
         description={selCollection?.cDescription ? selCollection?.cDescription : ''}
         staked={
-          selCollectionTokens && selCollectionTokens.staked ? selCollectionTokens.staked.filter((el: Token) => el.token_stake_time > el.token_end_time).length.toString() : "0"
+          selCollectionTokens && selCollectionTokens.staked ? selCollectionTokens.staked.length.toString() : "0"
         }
-        total={selCollectionTokens ? (selCollectionTokens.staked.filter((el: Token) =>  el.token_stake_time > el.token_end_time).length + selCollectionTokens.unstaked.length).toString() : "0"}
+        total={selCollectionTokens ? (selCollectionTokens.staked.length + selCollectionTokens.unstaked.length).toString() : "0"}
       />
+      <CollectionTabs selCollection={selCollection}/>
     </div>
   ) : (
     <div>

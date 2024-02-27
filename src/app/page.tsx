@@ -28,6 +28,7 @@ export default function Home() {
     const sAddress: string = colData.Saddress
     const collectionNFT = await getCollectionNFT(cAddress, myAddr)
     const smNFT = await getSMNFT(sAddress, myAddr)
+    console.log(smNFT)
     dispatch(setCollectionTokens({
       keyname: `${cAddress}`,
       tokens: {
@@ -56,7 +57,7 @@ export default function Home() {
   }
   useEffect(() => {
     fetchCollections()
-    // fetchRewards()
+    fetchRewards()
     routeConfig()
   }, [])
   return (

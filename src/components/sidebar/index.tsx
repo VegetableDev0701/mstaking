@@ -63,6 +63,7 @@ const Sidebar = () => {
             </Link>
           );
         })}
+
         {myAddr === ADMIN_ADDRESS && (
           <Link href="/owner-panel">
             <div
@@ -84,12 +85,6 @@ const Sidebar = () => {
         )}
 
         <CollectionsDropDown />
-      </div>
-      <div className="flex flex-col gap-2">
-        <Button onClick={() => {}}>Claim all rewards</Button>
-        <Button onClick={() => {}} className="bg-secondary">
-          Unstake All
-        </Button>
       </div>
     </div>
   );
